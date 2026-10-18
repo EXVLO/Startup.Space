@@ -6,6 +6,11 @@ on:
   push:
     branches: [main]
 
+env:
+  DOTNET_VERSION: '10.0.x'
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
 jobs:
   build:
     name: Build
@@ -17,10 +22,84 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
         run: dotnet restore
 
       - name: Build
         run: dotnet build --no-restore --configuration Release
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes --verbosity diagnostic
+
+  vulnerable-packages:
+    name: Vulnerable packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore
+
+      # `dotnet list package --vulnerable` exits 0 even when it finds vulnerabilities.
+      - name: Check for vulnerable packages
+        run: |
+          dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerable.txt
+          if grep -q "has the following vulnerable packages" vulnerable.txt; then
+            echo "::error::Vulnerable NuGet packages found. Update them before merging."
+            exit 1
+          fi
+
+  ef-migrations:
+    name: EF migrations
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Entity Framework Core
+        id: detect
+        run: |
+          if grep -q "Microsoft.EntityFrameworkCore" MentorBooking.csproj; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Entity Framework Core is not installed yet. Skipping migrations check."
+          fi
+
+      - name: Setup .NET
+        if: steps.detect.outputs.enabled == 'true'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dotnet-ef
+        if: steps.detect.outputs.enabled == 'true'
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Build
+        if: steps.detect.outputs.enabled == 'true'
+        run: dotnet build --configuration Release
+
+      - name: Check for model changes without a migration
+        if: steps.detect.outputs.enabled == 'true'
+        run: dotnet ef migrations has-pending-model-changes --no-build --configuration Release
