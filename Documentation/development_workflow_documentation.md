@@ -1,6 +1,6 @@
 # Development Workflow Documentation
 
-> **Status:** Draft v0.2.
+> **Status:** Draft v0.3.
 > Commands to run before every push. They mirror the checks in `.github/workflows/build.yml`, so if they pass locally, they pass on GitHub.
 > Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md).
 
@@ -112,6 +112,7 @@ Once Entity Framework and tests are added, append before the `echo`:
 | `Format` | Run `dotnet format` and commit the changes. |
 | `Vulnerable packages` | Find the listed package in the run log and update it (section 2.3). |
 | `EF migrations` | Run `dotnet ef migrations add <Name>` and commit the migration files. |
+| `Analyze (csharp)` (CodeQL) | Open **Security and quality → Code scanning**, read the alert (for example SQL injection or XSS), fix the code. Runs only while the repository is public; skipped when private. |
 
 Pushing new commits to the same branch re-runs the checks.
 
@@ -123,3 +124,4 @@ Pushing new commits to the same branch re-runs the checks.
 |---|---|---|---|
 | 0.1 | 2026-10-18 | First version: pre-push checks, branch, commit, and pull request workflow. | Aleksandre Nadirashvili |
 | 0.2 | 2026-10-18 | Removed branch, commit, and pull request sections. Kept only pre-push checks and CI fixes. | Aleksandre Nadirashvili |
+| 0.3 | 2026-10-18 | Added CodeQL to the CI failure table. | Aleksandre Nadirashvili |
