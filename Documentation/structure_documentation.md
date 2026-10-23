@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.1. This is the planned structure only. No folders or files have been created yet.
+> **Status:** Draft v0.2. This is the planned structure only. No folders or files have been created yet.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 
 ---
@@ -198,7 +198,7 @@ MentorBooking/
 
 - **Investors:** optional in the Excel. No files until Q-INV-1 is answered.
 - **Admin area:** `is_admin` exists, but no admin pages are defined (Q-ROLE-4).
-- **Founder Pathways / Requirements data:** no tables yet (Q-TK-1, Q-TK-2).
+- **Founder Pathways / Requirements data:** no tables in the Excel yet (Q-TK-1, Q-TK-2). A proposed backend plan for Founder Pathways is in [`pathway_backend_plan.md`](pathway_backend_plan.md).
 - **Test project:** a separate `MentorBooking.Tests` project, once Q-TECH-7 is answered.
 
 ---
@@ -208,3 +208,4 @@ MentorBooking/
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-10-17 | Moved out of `overview_documentation.md` (was Section 9). | Aleksandre Nadirashvili |
+| 0.2 | 2026-10-20 | Linked the Founder Pathways backend plan from Section 4. | Nikoloz Khidasheli |
