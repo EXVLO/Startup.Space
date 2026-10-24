@@ -79,7 +79,7 @@ jobs:
       - name: Detect Entity Framework Core
         id: detect
         run: |
-          if grep -q "Microsoft.EntityFrameworkCore" MentorBooking.csproj; then
+          if grep -q "Microsoft.EntityFrameworkCore" Startup.Lab.csproj; then
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           else
             echo "enabled=false" >> "$GITHUB_OUTPUT"

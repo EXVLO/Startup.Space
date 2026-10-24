@@ -1,7 +1,7 @@
 # Project Overview Documentation
 
-> **Status:** Draft v0.4, written from `HSS PRoject 1.xlsx`.
-> Nothing here goes beyond what the Excel file says. Anything unclear, missing, or contradictory is listed in [Section 11, Open Questions](#11-open-questions) and will be answered later, when each feature is built.
+> **Status:** Draft v0.7, written from the updated `HSS PRoject 1.xlsx` (2026-10-24) plus team decisions made after the first version.
+> Where a team decision changes the Excel, the text says so and links to [Section 7.1, Role model](#71-role-model-team-decision-v05). Everything else comes from the Excel. Anything unclear, missing, or contradictory is listed in [Section 11, Open Questions](#11-open-questions) and will be answered later, when each feature is built.
 > **Current goal:** set up the layers and folder/file structure only (see `structure_documentation.md`). No business logic yet, and no code has been written from this document.
 
 ---
@@ -12,7 +12,9 @@
 |---|---|
 | Source file | `Documentation/HSS PRoject 1.xlsx` |
 | Sheets in file | 17 |
-| Sheet names | Black Sheet, Pages, Tables, Routes, Extra Info - Devs, Register - Login Page, Founders Toolkit Page, Landing Page, Startups List Page, Founders List Page, Startup Detail Page, Founders Details Page, News Page, Booking Page, Archive -- inactive, About Us Page, Privacy and Policy Page |
+| Sheet names | Pages, Sheet23, Tables, Routes, Register - Login Page, Founders Toolkit Page, Landing Page, Startups List Page, My Startups Page, Founders List Page, Startup Detail Page, Founders Details Page, News Page, Booking Page, Archive -- inactive, About Us Page, Privacy and Policy Page |
+| Removed in the 2026-10-24 version | **Extra Info - Devs** (deleted) and **Black Sheet** (now an empty sheet named "Sheet23"). Sections 3 and 4 keep their content from the earlier version (Q-GEN-10). |
+| Added in the 2026-10-24 version | **My Startups Page** |
 
 ---
 
@@ -20,13 +22,18 @@
 
 A website where **students who have their own startups (founders)** can upload their startups so other people can see them. The platform also has extra services, including **booking sessions with crew members / mentors** for advice, a **Founders Toolkit** (pathways, video tutorials, documents, glossary, checklist), and a **News feed**.
 
-- Name in the Landing Page sheet: **"Startup.Lab"** ("About Startup.Lab")
+There is one kind of account: **User**. Every user is treated as a founder. An admin can give any user the **mentor** role (see Section 7.1).
+
+- Project name: **Startup.Lab** (also used in the Landing Page sheet, "About Startup.Lab"). It was called MentorBooking until 2026-10-24.
 - Domain in the Routes sheet: **`incubation.harbour.space`**
-- Local project folder name: `MentorBooking`
+- Project folder and file: `Startup.Lab/`, `Startup.Lab.csproj`. The C# root namespace is `StartupLab`, because a namespace named `Startup` would hide the `Startup` entity class.
+- GitHub repository: `EXVLO/Startup.Space`
 
 ---
 
 ## 3. Technical Stack and Architecture (sheet "Extra Info - Devs")
+
+> This sheet is not in the 2026-10-24 Excel. The content below is from the earlier version and still applies until Q-GEN-10 says otherwise.
 
 | Area | Specified |
 |---|---|
@@ -46,7 +53,7 @@ Routing -> Controller -> Services -> Repositories -> EF -> DB (PostgreSQL)
                                                           -> Razor views
 ```
 
-> Note: the existing `MentorBooking.csproj` targets **`net10.0`**, but the Excel says **.NET 9.0**. See question Q-TECH-1.
+> Note: the existing `Startup.Lab.csproj` targets **`net10.0`**, but the Excel says **.NET 9.0**. See question Q-TECH-1.
 
 ### 3.2 Explicit technical requirements
 
@@ -97,6 +104,8 @@ Routing -> Controller -> Services -> Repositories -> EF -> DB (PostgreSQL)
 
 ## 4. Feature Map (sheet "Black Sheet")
 
+> In the 2026-10-24 Excel this sheet is empty and renamed "Sheet23". The map below is from the earlier version (Q-GEN-10).
+
 | Main page | Detail / sub pages |
 |---|---|
 | Founders List | |
@@ -132,8 +141,9 @@ Routing -> Controller -> Services -> Repositories -> EF -> DB (PostgreSQL)
 | 9 | Founders Toolkit Page | Done | Video Tutorials Page (Udemy), Founder Pathways Page |
 | 10 | About Us Page | Done | Team & Mentors |
 | 11 | Privacy and Policy Page | Done | |
-| 12 | Profile | *(no status)* | profile, my startups |
+| 12 | Profile | *(no status)* | |
 | 13 | Settings | *(no status)* | |
+| 14 | My Startups | *(no status)* | Listed as "my startups" under Profile/Settings. Has its own wireframe sheet and route since 2026-10-24 |
 
 > "Done" is copied from the sheet. What it means is question Q-GEN-3.
 
@@ -161,6 +171,7 @@ Base domain: `incubation.harbour.space`
 | 16 | `/Toolkit` | Founders Toolkit |
 | 17 | `/Toolkit/Videos` | Toolkit / Video Tutorials |
 | 18 | `/Toolkit/Pathway` | Toolkit / Pathway |
+| 19 | `/MyStartups` | My Startups |
 
 ### 5.3 Common layout
 
@@ -174,7 +185,7 @@ Access labels are copied exactly as written in cell A1/A2 of each sheet.
 - **Login form:** Email, Password (with a note "Tvali", Georgian for "eye", which may mean a show/hide password toggle; see Q-AUTH-2), Login button
 - Links: **Forgot Password**, **Create Account**
 - **Register form:** Name, Surname, Email, Password (note "tvali"), Repeat password
-- Questions on the register form: **"Are you a founder"** (note: "found") and **"Are you a mentor"**
+- ~~Questions on the register form: "Are you a founder" (note: "found") and "Are you a mentor"~~. **Removed (v0.5):** registration no longer asks about roles. Every new account is a normal user, and only an admin can give the mentor role (Section 7.1). The 2026-10-24 sheet still shows both questions, with a new note under them: **"normal user no founder no mentor"**.
 
 #### Landing Page (Access: Public)
 Sections in order:
@@ -191,6 +202,7 @@ Sections in order:
 #### Founders List Page (Access: Public)
 - Grid of founder cards (wireframe shows 7: Founder 1 to 7)
 - **Search bar**
+- Since v0.5, "founder" means any user, because there is no separate founder flag any more (Section 7.1). Whether mentors also appear here is Q-FD-7.
 
 #### Startup Details Page (Access: Public)
 Sections in order:
@@ -207,18 +219,20 @@ Sections in order:
 - **Contact Info**
 
 #### News Page (Access: Public)
-- A **thumbnail** / featured area at the top. The Tables sheet has a note "main news", which may refer to this; see Q-NEWS-2.
+- A **thumbnail** / featured area at the top. The earlier Tables sheet had a note "main news". The 2026-10-24 version replaced it with a `News.is_primary` column, which probably marks this featured item (Q-NEWS-2).
 - A grid of News items
 - **Paginated**
-- Note in the Tables sheet: **"filter by tags"** next to the News table
+- **Filter by tags:** since 2026-10-24, tags are stored in the `Tag` table and linked through `News_Tag` (Sections 6.6 and 6.7)
 
 #### Booking Page (Access: user only)
 - Title: "Booking Crew Page"
 - **Book with crew member / mentors**
 - **Calendar**
 - **Session Guidelines**
-- Note in cell C1: only **founders** may use booking (cell C1 is a crude note, roughly "if not a founder, no access"; see Q-BOOK-1)
-- Crew member availability states shown in the wireframe:
+- Note in cell C1: only **founders** may use booking (cell C1 is a crude note, roughly "if not a founder, no access"). Since v0.5 every user is a founder, so **any logged-in user** can use this page (Section 7.1).
+- The people being booked are **mentors** (users with `is_mentor = true`). The Excel calls them crew members.
+- **Mentor booking page (WIP, v0.5):** mentors get access to a separate booking page. Its content and route are not decided yet (Q-BOOK-14).
+- Crew member (mentor) availability states shown in the wireframe:
 
 | State | Label | Extra text |
 |---|---|---|
@@ -228,7 +242,7 @@ Sections in order:
 
 #### Founders Toolkit Page (Access: "public/user required")
 - Sub-navigation: **Founder Pathways**, **Video Tutorials**, **View Your Checklist Page**
-- Note: **"mentor cannot checklist"** (mentors cannot use the checklist)
+- Note: **"mentor cannot checklist"** (mentors cannot use the checklist). Since a mentor is now also a normal user, this rule needs re-confirming (Q-TK-6).
 - Content sections: **Founder Pathways**, **Requirements**, **Documents**, **Glossary**
 - Pages sheet: Video Tutorials are labelled **"(Udemy)"**
 
@@ -236,6 +250,7 @@ Sections in order:
 - **Info about this website and crews**
 - Crew Member cards (wireframe shows 3)
 - Route `/AboutUs/Team` shows "Team & Mentors"
+- Since v0.5 the crew/mentor cards come from users with `is_mentor = true`, because the `Crew Member` table has been removed (Section 6.5).
 
 #### Archive (Access: Public)
 - Sheet name: "Archive -- inactive". The sheet is otherwise empty.
@@ -244,16 +259,24 @@ Sections in order:
 #### Privacy and Policy Page (Access: Public)
 - Title only. No content specified.
 
+#### My Startups Page (Access: "private/user"; added 2026-10-24)
+- Route: `/MyStartups`
+- Title: "My Startups Page"
+- Grid of the logged-in user's startup cards (wireframe shows 7: Startup 1 to 7)
+- **Search bar**
+- **Filter by tags.** Startups have `Category`, not `Tag`; see Q-SU-14.
+- Creating and editing startups is not shown on the wireframe (Q-PR-2).
+
 #### Profile and Settings
 - Listed in the Pages sheet and in Routes (`/Profile`, `/Settings`).
-- Profile sub-items: **profile**, **my startups**
+- The "profile" sub-item was removed from the Pages sheet on 2026-10-24. "my startups" is now its own page (above).
 - No wireframe sheet exists for either page.
 
 ---
 
 ## 6. Data Model (sheet "Tables")
 
-Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullable** = optional. Unmarked columns are assumed **not nullable** because the sheet only marks nullable ones; confirm in Q-DATA-1.
+Columns are copied exactly from the 2026-10-24 Excel. That version already includes the role model changes (Section 7.1). **PK** = primary key, **FK** = foreign key, **nullable** = optional. Unmarked columns are assumed **not nullable** because the sheet only marks nullable ones; confirm in Q-DATA-1.
 
 ### 6.1 User group
 
@@ -266,11 +289,13 @@ Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullab
 | 4 | email | |
 | 5 | date_created | |
 | 6 | date_modified | nullable |
-| 7 | startup_count | |
-| 8 | description | nullable |
-| 9 | is_founder | |
-| 10 | is_admin | |
-| 11 | is_active | |
+| 7 | description | nullable |
+| 8 | is_mentor | default `false`. **Added v0.5.** Only an admin can change it. |
+| 9 | is_admin | |
+| 10 | is_active | |
+
+> **Removed v0.5:** `is_founder`. Every user is a founder, so the flag is not needed.
+> **Removed 2026-10-24:** `startup_count`. The count comes from `User_Startup`. In the sheet the row numbers skip from 7 to 9 where it used to be.
 
 **User Photo**
 | # | Column | Notes |
@@ -288,6 +313,18 @@ Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullab
 | 3 | contact_info | |
 | 4 | date_created | |
 | 5 | date_modified | nullable |
+
+**User Experience** (**added v0.5**; replaces the "experience" note above the removed `Crew Member` table)
+| # | Column | Notes |
+|---|---|---|
+| 1 | user_exp_id | PK |
+| 2 | user_id | FK to User |
+| 3 | title | nullable |
+| 4 | description | nullable |
+| 5 | date_created | |
+| 6 | date_modified | |
+
+One user can have many experience entries. Any user can add them, not only mentors. `date_modified` is not marked nullable here, unlike on most other tables (Q-DATA-6).
 
 ### 6.2 Startup group
 
@@ -377,7 +414,7 @@ Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullab
 | 4 | definition | |
 | 5 | display_order | |
 | 6 | date_created | |
-| 7 | date_modified | |
+| 7 | date_modified | nullable (marked on 2026-10-24) |
 
 **Toolkit Checklist**
 | # | Column | Notes |
@@ -397,7 +434,7 @@ Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullab
 | 3 | description | nullable |
 | 4 | date_created | |
 | 5 | date_modified | nullable |
-| 6 | is_active | |
+| 6 | is_primary | Was `is_active` before 2026-10-24. Probably marks the featured "main news" item (Q-NEWS-2, Q-NEWS-7). |
 
 **News Photo**
 | # | Column | Notes |
@@ -423,42 +460,38 @@ Columns are copied exactly. **PK** = primary key, **FK** = foreign key, **nullab
 | 7 | is_primary | |
 | 8 | date_created | |
 
-### 6.5 Crew group
+### 6.5 Crew group (removed in v0.5)
 
-**Crew Member**
-| # | Column | Notes |
-|---|---|---|
-| 1 | member_id | PK |
-| 2 | name | |
-| 3 | surname | |
-| 4 | email | |
-| 5 | date_created | |
-| 6 | date_modified | nullable |
-| 7 | description | nullable |
-| 8 | is_active | |
+The Excel had a **Crew Member** table (`member_id`, name, surname, email, dates, description, is_active) and a **Crew Member Photo** table, with the notes **"mentor"**, **"links"**, **"experience"** written above them. Both tables are **removed**. Mentors are now normal users with `User.is_mentor = true` (Section 7.1):
 
-Notes written above this table: **"mentor"**, **"links"**, **"experience"** (possibly planned extra fields; see Q-CREW-3).
+| Old Crew Member data | Where it lives now |
+|---|---|
+| name, surname, email, description, dates, is_active | the same columns on `User` |
+| "mentor" note | `User.is_mentor` |
+| "experience" note | `User Experience` table (many per user) |
+| photos (Crew Member Photo) | `User Photo` |
+| "links" note | not decided; `User Contact` may cover it (Q-CREW-3) |
 
-**Crew Member Photo**
-| # | Column | Notes |
-|---|---|---|
-| 1 | member_photo_id | PK |
-| 2 | member_id | FK to Crew Member |
-| 3 | title | nullable |
-| 4 | description | nullable |
-| 5 | address_key | |
-| 6 | date_created | |
+### 6.6 Category and Tag group
 
-### 6.6 Category group
-
-**Category**
+**Category** (used by Startups)
 | # | Column | Notes |
 |---|---|---|
 | 1 | category_id | PK |
 | 2 | title | |
 | 3 | description | nullable |
 | 4 | date_created | |
-| 5 | date_modified | |
+| 5 | date_modified | nullable (marked on 2026-10-24) |
+| 6 | is_active | |
+
+**Tag** (added 2026-10-24; used by News through `News_Tag`)
+| # | Column | Notes |
+|---|---|---|
+| 1 | tag_id | PK |
+| 2 | title | |
+| 3 | description | nullable |
+| 4 | date_created | |
+| 5 | date_modified | nullable |
 | 6 | is_active | |
 
 ### 6.7 Pivot (join) tables
@@ -468,6 +501,12 @@ Notes written above this table: **"mentor"**, **"links"**, **"experience"** (pos
 |---|---|---|
 | 1 | startup_id | FK to Startup |
 | 2 | category_id | FK to Category |
+
+**News_Tag** (many-to-many: News and Tag; added 2026-10-24)
+| # | Column | Notes |
+|---|---|---|
+| 1 | news_id | FK to News |
+| 2 | tag_id | FK to Tag |
 
 **User_Checklist** (many-to-many: User and Toolkit Checklist, with progress)
 | # | Column | Notes |
@@ -488,12 +527,13 @@ Notes written above this table: **"mentor"**, **"links"**, **"experience"** (pos
 ```
 User            1 ── * User Photo
 User            1 ── * User Contact
+User            1 ── * User Experience
 User            * ── * Startup            (via User_Startup)
 User            * ── * Toolkit Checklist  (via User_Checklist)
 Startup         1 ── * Startup Photo / Startup Video / Startup Document / Startup Link
 Startup         * ── * Category           (via Startup_Category)
 News            1 ── * News Photo / News Video
-Crew Member     1 ── * Crew Member Photo
+News            * ── * Tag                (via News_Tag)
 ```
 
 Toolkit Video, Toolkit Document, and Toolkit Glossary have no foreign keys.
@@ -502,16 +542,46 @@ Toolkit Video, Toolkit Document, and Toolkit Glossary have no foreign keys.
 
 These are listed as facts. They are **not** design decisions. Each one is linked to a question.
 
-- **Booking / appointments / crew availability.** The Booking page has a calendar and busy/available states, but no table exists (Q-BOOK-3).
+- **Booking / appointments / mentor availability.** The Booking page has a calendar and busy/available states, but no table exists. A booking would link a user to a mentor (both rows in `User`) (Q-BOOK-3).
 - **Investors.** In the Black Sheet as "(Optional)" with "Booking with Investor", but no table (Q-INV-1).
-- **Tags.** "Filter by tags" appears for Startups and News. Only `Category` exists, and only for Startups (Q-DATA-4).
+- **Tags for Startups.** News now has `Tag` / `News_Tag` (added 2026-10-24). The Startups List and My Startups pages also say "filter by tags", but startups only link to `Category` (Q-DATA-4, Q-SU-14).
 - **Founder Pathways / Requirements.** Toolkit page sections without tables (Q-TK-2).
 - **Password / authentication data.** The User table has no password or auth fields (Q-AUTH-1).
-- **Mentor flag.** The register form asks "Are you a mentor", but User only has `is_founder` and `is_admin` (Q-ROLE-2).
+- ~~**Mentor flag.**~~ **Resolved v0.5:** `User.is_mentor` added.
 
 ---
 
-## 7. Roles and Access (as written in the Excel)
+## 7. Roles and Access
+
+### 7.1 Role model (team decision, v0.5)
+
+This replaces the founder/mentor/crew split from the Excel.
+
+| Role | How it is stored | What it can do |
+|---|---|---|
+| Visitor | not logged in | Public pages only |
+| User (= founder) | a row in `User` | Everything a logged-in user can do: profile, own startups, toolkit, booking a mentor, etc. There is no separate founder flag. |
+| Mentor | `User.is_mentor = true` | Everything a user can do, plus access to the separate **mentor booking page** (WIP, Q-BOOK-14). Shown as crew/mentors on About Us and Landing. |
+| Admin | `User.is_admin = true` | Can give the mentor role to **any** account. Other admin abilities: Q-ROLE-4. |
+
+Flow:
+
+1. Someone registers. Registration does not ask about roles, so they become a normal user (founder).
+2. The user uses the site normally.
+3. Later, an admin can set `is_mentor = true` on that account. Users can't do this themselves.
+4. As a mentor, the account can also open the mentor booking page.
+
+Consequences:
+
+- `User.is_founder` is removed, `User.is_mentor` is added, and a new `User Experience` table is added (Section 6.1).
+- The `Crew Member` and `Crew Member Photo` tables are removed (Section 6.5).
+- The register form no longer asks "Are you a founder" / "Are you a mentor" (Section 5.4).
+
+The 2026-10-24 Excel matches this for the data model: `is_mentor` replaces `is_founder`, Crew Member is marked "Deleted", and `User Experience` is added.
+
+### 7.2 Roles as written in the Excel (historical)
+
+Kept for reference. Section 7.1 replaces the founder, mentor, and crew rows.
 
 | Role (as named in the Excel) | Where it appears |
 |---|---|
@@ -522,6 +592,8 @@ These are listed as facts. They are **not** design decisions. Each one is linked
 | Crew member | `Crew Member` table, "Meet the Crew", "Booking with Crew team" |
 | Admin | `User.is_admin` |
 | Investor (optional) | Black Sheet only |
+
+### 7.3 Page access
 
 | Page | Access label in sheet |
 |---|---|
@@ -536,7 +608,9 @@ These are listed as facts. They are **not** design decisions. Each one is linked
 | Archive | Public |
 | Privacy and Policy | Public |
 | Founders Toolkit | public/user required |
-| Booking | user only (founders only, per note) |
+| Booking | user only (founders only, per note). Since v0.5: any logged-in user |
+| Mentor booking page | *(not in the sheet; v0.5)* Mentors only. WIP |
+| My Startups | private/user (added 2026-10-24) |
 | Profile | *(not specified)* |
 | Settings | *(not specified)* |
 
@@ -550,13 +624,17 @@ These are listed as facts. They are **not** design decisions. Each one is linked
 4. **Toolkit sub-pages:** the Black Sheet has *Checklist / Documents / requirements, Video Tutorials, Glossary*. The Pages sheet has *Video Tutorials, Founder Pathways*. Routes only has `/Toolkit/Videos` and `/Toolkit/Pathway`. The Toolkit wireframe has *Founder Pathways, Video Tutorials, View Your Checklist Page* plus sections *Requirements, Documents, Glossary*.
 5. **"Update feed" vs "News Feed" vs "News":** possibly the same feature under three names.
 6. **"Founder Profile" vs "Founders Details Page":** possibly the same page.
-7. **"Crew" vs "Mentors" vs "Team & Mentors":** these may be the same group or different groups.
-8. **Mentor role:** asked at registration, but there is no mentor field on User. A separate Crew Member table exists.
+7. ~~**"Crew" vs "Mentors" vs "Team & Mentors"**~~ **Resolved v0.5:** all are users with `is_mentor = true`.
+8. ~~**Mentor role**~~ **Resolved v0.5:** stored as `User.is_mentor` and set by an admin. The Crew Member table is removed.
 9. **Booking page:** it is listed as "Booking Page / With Crew Members" in Pages, but the Black Sheet also has "Booking with Crew team (Tutorials)" and "Booking with Investor".
-10. **`startup_count` on User:** this duplicates information derivable from `User_Startup`.
+10. ~~**`startup_count` on User**~~ **Resolved 2026-10-24:** the column was removed.
 11. **Startup "Contact Info" section:** there is no startup contact table, only `User Contact`.
 12. **`Toolkit Glossary.address_key`:** the glossary has term/definition, and it's unclear what file it would point to.
-13. **Toolkit Glossary `date_modified` and Category `date_modified`:** not marked nullable, while `date_modified` is nullable in every other table.
+13. ~~**Toolkit Glossary and Category `date_modified`**~~ **Resolved 2026-10-24:** both are now marked nullable. `User Experience.date_modified` is the only `date_modified` still not marked nullable.
+14. **News `is_active` removed (2026-10-24):** News now has `is_primary` in that place. Every other main table (User, Startup, Category, Tag) has `is_active`, so news can no longer be hidden or soft-deleted (Q-NEWS-7).
+15. **Register sheet (2026-10-24):** it still shows "Are you a founder" / "Are you a mentor", but the new note "normal user no founder no mentor" and the Tables sheet say there are no role questions.
+16. **"Filter by tags" for startups:** shown on Startups List and My Startups, but `Tag` is only linked to News. Startups use `Category`.
+17. **Missing sheets (2026-10-24):** "Extra Info - Devs" was deleted and "Black Sheet" is empty ("Sheet23"). Sections 3 and 4 still rely on their earlier content.
 
 ---
 
@@ -574,6 +652,9 @@ Moved to [`structure_documentation.md`](structure_documentation.md).
 | 0.2 | 2026-10-17 | Added Section 9, Project Structure (layers, folders, files). Open questions moved to the end, to be answered per feature. | Aleksandre Nadirashvili |
 | 0.3 | 2026-10-17 | Project structure moved to `structure_documentation.md`. | Aleksandre Nadirashvili |
 | 0.4 | 2026-10-17 | Added Author column to the change log. | Aleksandre Nadirashvili |
+| 0.5 | 2026-10-23 | New role model (Section 7.1): one kind of account (User = founder), admin-assigned mentor role. Removed `User.is_founder` and the Crew Member / Crew Member Photo tables. Added `User.is_mentor` and the `User Experience` table. Removed role questions from registration. Added the mentor booking page (WIP). Updated the affected pages, inconsistencies, and open questions. | Aleksandre Nadirashvili |
+| 0.6 | 2026-10-24 | Synced with the updated Excel (2026-10-24). Removed `User.startup_count`. Changed `News.is_active` to `is_primary`. Added the `Tag` and `News_Tag` tables. Marked as nullable: Toolkit Glossary and Category `date_modified`, and User Experience `title`/`description`. Added the My Startups page and the `/MyStartups` route. Noted the deleted "Extra Info - Devs" sheet and the emptied "Black Sheet". Updated inconsistencies and open questions. | Aleksandre Nadirashvili |
+| 0.7 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab (Q-GEN-1). | Aleksandre Nadirashvili |
 
 ---
 
@@ -582,15 +663,16 @@ Moved to [`structure_documentation.md`](structure_documentation.md).
 These don't block the folder structure. They will be answered when each feature is built. Answer format: "Q-GEN-1: …".
 
 ### 11.1 General / product
-- **Q-GEN-1:** What is the official product name: "Startup.Lab", "HSS", "MentorBooking", or something else?
+- ~~**Q-GEN-1:** What is the official product name?~~ **Answered (2026-10-24):** Startup.Lab.
 - **Q-GEN-2:** Is this for Harbour.Space (domain `incubation.harbour.space`)? Who is the organization behind it?
 - **Q-GEN-3:** What does "Done" in the Pages sheet mean: wireframe designed, requirements final, or something else?
-- **Q-GEN-4:** Are Profile and Settings in scope for the first version? They have no status.
+- **Q-GEN-4:** Are Profile, Settings, and My Startups in scope for the first version? They have no status.
 - **Q-GEN-5:** Is there an MVP / first-release scope, and what's in it? Is anything "optional" besides Investors?
 - **Q-GEN-6:** Are there designs (Figma etc.) beyond the Excel wireframes, or does the Excel define the layout?
 - **Q-GEN-7:** What goes in the Header (4 items), Nav Bar, and Footer (4 items)?
 - **Q-GEN-8:** What text/content goes in "About Startup.Lab", "Residency & Journey", About Us, and Privacy Policy? Will you provide it, or should it be placeholder text?
 - **Q-GEN-9:** What does "Residency & Journey" mean for this program?
+- **Q-GEN-10:** In the 2026-10-24 Excel, the "Extra Info - Devs" sheet is deleted and the "Black Sheet" is empty ("Sheet23"). Was that intended? Does their earlier content (tech stack, layers, requirements, feature map) still apply?
 
 ### 11.2 Tech
 - **Q-TECH-1:** .NET 9.0 (Excel) or .NET 10 (current project)?
@@ -606,23 +688,25 @@ These don't block the folder structure. They will be answered when each feature 
 ### 11.3 Authentication and registration
 - **Q-AUTH-1:** The User table has no password/security fields. Should Identity's own tables hold them, with `User` as a profile table linked to them?
 - **Q-AUTH-2:** Does "Tvali" next to the password fields mean a show/hide-password ("eye") toggle?
-- **Q-AUTH-3:** What does "found" next to "Are you a founder" mean?
-- **Q-AUTH-4:** Can a user be both a founder and a mentor?
-- **Q-AUTH-5:** If someone ticks "Are you a mentor", are they a mentor immediately, or does an admin have to approve them?
+- ~~**Q-AUTH-3:** What does "found" next to "Are you a founder" mean?~~ **Obsolete (v0.5):** the question was removed from registration.
+- ~~**Q-AUTH-4:** Can a user be both a founder and a mentor?~~ **Answered (v0.5):** yes. Every user is a founder, and a mentor is a user with `is_mentor = true`.
+- ~~**Q-AUTH-5:** If someone ticks "Are you a mentor", are they a mentor immediately, or does an admin have to approve them?~~ **Answered (v0.5):** there is no checkbox; only an admin can give the mentor role.
 - **Q-AUTH-6:** Is email confirmation required at registration?
 - **Q-AUTH-7:** How should Forgot Password work (email reset link)? Which email service should send it?
 - **Q-AUTH-8:** Can anyone register, or only students/people with a specific email domain?
 
 ### 11.4 Roles and permissions
-- **Q-ROLE-1:** Please confirm the full list of roles: visitor, user, founder, mentor, crew, admin, investor?
-- **Q-ROLE-2:** How is "mentor" stored? The User table has no `is_mentor` field.
-- **Q-ROLE-3:** Are crew members/mentors users who log in, or only profiles managed by an admin (the separate `Crew Member` table)?
-- **Q-ROLE-4:** What can an admin do? Is an admin panel needed (manage users, startups, news, toolkit, crew, categories)? It isn't in the pages list.
-- **Q-ROLE-5:** What can a logged-in non-founder, non-mentor user do?
+- ~~**Q-ROLE-1:** Please confirm the full list of roles.~~ **Answered (v0.5):** visitor, user (= founder), mentor, admin. Investor is still Q-INV-1.
+- ~~**Q-ROLE-2:** How is "mentor" stored?~~ **Answered (v0.5):** `User.is_mentor`.
+- ~~**Q-ROLE-3:** Are crew members/mentors users who log in, or only admin-managed profiles?~~ **Answered (v0.5):** they are users who log in. The `Crew Member` table is removed.
+- **Q-ROLE-4:** What can an admin do besides giving the mentor role (decided in v0.5)? Is an admin panel needed (manage users, startups, news, toolkit, categories), and what is its route? It isn't in the pages list.
+- ~~**Q-ROLE-5:** What can a logged-in non-founder, non-mentor user do?~~ **Obsolete (v0.5):** every user is a founder.
 - **Q-ROLE-6:** "public/user required" on the Toolkit: which parts are public and which need login?
+- **Q-ROLE-7:** Can an admin remove the mentor role again? If so, what happens to that mentor's existing bookings?
+- **Q-ROLE-8:** Can an admin give or remove the admin role, or is `is_admin` set only directly in the database?
 
 ### 11.5 Startups
-- **Q-SU-1:** Who can create a startup? Only users with `is_founder`?
+- ~~**Q-SU-1:** Who can create a startup? Only users with `is_founder`?~~ **Answered (v0.5):** any user (there is no `is_founder` any more).
 - **Q-SU-2:** Can a startup have multiple founders (`User_Startup` suggests yes)? How are co-founders added: invitation, search, approval?
 - **Q-SU-3:** Does an admin need to approve a startup before it is public?
 - **Q-SU-4:** Who can edit or delete a startup: any co-founder, only the creator, an admin?
@@ -634,15 +718,19 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-SU-10:** What does "Filter by founders" look like: a dropdown, multi-select, or search?
 - **Q-SU-11:** What does the search bar search: name, description, founder, categories?
 - **Q-SU-12:** How many startups per page? Should the list be paginated?
-- **Q-SU-13:** What should happen to `startup_count`: keep it as a stored column or calculate it?
+- ~~**Q-SU-13:** What should happen to `startup_count`?~~ **Answered (2026-10-24):** removed from User. Calculate it from `User_Startup`.
+- **Q-SU-14:** "Filter by tags" on Startups List and My Startups: should it use `Category`, or should startups also link to `Tag` (e.g. a `Startup_Tag` table)?
+- **Q-SU-15:** My Startups page: does the search bar search only the user's own startups? Are inactive (`is_active = false`) startups shown there?
 
 ### 11.6 Founders
-- **Q-FD-1:** Is the Founders List only users with `is_founder = true`?
+- ~~**Q-FD-1:** Is the Founders List only users with `is_founder = true`?~~ **Answered (v0.5):** `is_founder` is removed; the list shows users (see Q-FD-7 for mentors).
 - **Q-FD-2:** What "Info about founder" is shown beyond name, surname, and description (university, program, year, skills)?
 - **Q-FD-3:** What is `contact_info` in User Contact: free text, or typed (email, phone, LinkedIn, etc.)? Can there be many per user?
 - **Q-FD-4:** Can a user have multiple photos (the table allows it), or only one profile photo?
 - **Q-FD-5:** What does the founder search bar search?
 - **Q-FD-6:** Should founders' email/contact be visible to the public or only to logged-in users?
+- **Q-FD-7:** Do mentors also appear in the Founders List, or only in the crew/mentor sections? Should users with no startups appear?
+- **Q-FD-8:** Are `User Experience` entries shown on the Founder Details page for every user, or only for mentors? In what order (there is no `display_order`)?
 
 ### 11.7 Archive
 - **Q-AR-1:** What puts a startup/founder in the Archive: `is_active = false`? Graduated? Manual action by an admin?
@@ -651,19 +739,20 @@ These don't block the folder structure. They will be answered when each feature 
 
 ### 11.8 News / Update feed
 - **Q-NEWS-1:** Are "Update feed", "News Feed", and "News" the same feature?
-- **Q-NEWS-2:** Is "main news" / "thumbnail" a featured top news item? How is it chosen?
+- **Q-NEWS-2:** Is "main news" / "thumbnail" a featured top news item chosen with `News.is_primary` (added 2026-10-24)? Can only one news item be primary at a time?
 - **Q-NEWS-3:** Who creates news: admins only, or founders too (startup updates)?
-- **Q-NEWS-4:** "Filter by tags" for news: what tags? Should they reuse `Category`, or is there a separate news tag table?
+- ~~**Q-NEWS-4:** "Filter by tags" for news: what tags?~~ **Answered (2026-10-24):** a separate `Tag` table, linked through `News_Tag`.
 - **Q-NEWS-5:** Is there a news detail page (`/News/{id}`)? It isn't in Routes.
 - **Q-NEWS-6:** Page size for news pagination?
+- **Q-NEWS-7:** `News.is_active` was replaced by `is_primary` on 2026-10-24. Was removing `is_active` intended? Without it, how is a news item hidden or archived?
 
 ### 11.9 Booking
-- **Q-BOOK-1:** Please confirm: only founders can book, and other users can't access the page at all (or should they see a message)?
-- **Q-BOOK-2:** Who can be booked: crew members, mentors, investors? Are these the same people?
+- ~~**Q-BOOK-1:** Please confirm: only founders can book?~~ **Answered (v0.5):** every user is a founder, so any logged-in user can book. Visitors are sent to login.
+- **Q-BOOK-2:** Who can be booked? **Partly answered (v0.5):** mentors (`is_mentor = true`), who are the same people as crew. Investors are still open (Q-INV-1).
 - **Q-BOOK-3:** There is no booking table. What data does a booking need (who, with whom, date/time, duration, topic/notes, status)?
-- **Q-BOOK-4:** How is availability defined? Does each crew member set time slots, working hours, or something else?
+- **Q-BOOK-4:** How is availability defined? Does each mentor set time slots, working hours, or something else?
 - **Q-BOOK-5:** What do the states mean exactly: inactive/active, busy/available ("busy until …", "available until …"), and "contact crew"?
-- **Q-BOOK-6:** Do bookings need approval from the crew member, or are they confirmed instantly?
+- **Q-BOOK-6:** Do bookings need approval from the mentor, or are they confirmed instantly?
 - **Q-BOOK-7:** Can bookings be cancelled or rescheduled, and by whom?
 - **Q-BOOK-8:** Are sessions online or in person? Should a meeting link or location be stored?
 - **Q-BOOK-9:** Should emails or notifications be sent on booking, cancellation, or reminders?
@@ -671,6 +760,8 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-BOOK-11:** What text goes in "Session Guidelines"?
 - **Q-BOOK-12:** Limits: maximum bookings per founder per week, session length, how far in advance?
 - **Q-BOOK-13:** "Booking with Crew team (Tutorials)": what does "Tutorials" mean here?
+- **Q-BOOK-14:** Mentor booking page (WIP): what does it show (incoming bookings, availability settings, accept/decline), and what is its route?
+- **Q-BOOK-15:** Can a mentor book a session with another mentor?
 
 ### 11.10 Founders Toolkit
 - **Q-TK-1:** What is a "Founder Pathway": steps, stages, text content? Who manages it?
@@ -678,34 +769,34 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-TK-3:** Video Tutorials "(Udemy)": are they embedded Udemy links, uploaded videos, or both? What does `address_key` hold for them?
 - **Q-TK-4:** Are Toolkit Documents downloadable files? Public or login-only?
 - **Q-TK-5:** Glossary: why does it have `address_key`? Is it meant to be removed?
-- **Q-TK-6:** Checklist: is it per user (`User_Checklist`) and only for founders ("mentor cannot checklist")? Are checklist items the same for everyone?
+- **Q-TK-6:** Checklist: it is per user (`User_Checklist`). The Excel says "mentor cannot checklist", but since v0.5 a mentor is also a normal user (founder). Does that rule still apply, and what happens to checklist progress when a user becomes a mentor? Are checklist items the same for everyone?
 - **Q-TK-7:** Can a checklist item be un-completed?
 - **Q-TK-8:** Is there a separate checklist page route ("View Your Checklist Page")? It isn't in Routes.
 - **Q-TK-9:** Who manages toolkit content: admins only?
 
 ### 11.11 Crew / Mentors / About Us
-- **Q-CREW-1:** Are "Crew", "Team", and "Mentors" the same people?
+- ~~**Q-CREW-1:** Are "Crew", "Team", and "Mentors" the same people?~~ **Answered (v0.5):** yes, users with `is_mentor = true`.
 - **Q-CREW-2:** Is `/AboutUs/Team` a separate page, or a section of `/AboutUs`?
-- **Q-CREW-3:** Should the notes "mentor", "links", "experience" above the Crew Member table become columns (e.g. `is_mentor`, links, experience)?
-- **Q-CREW-4:** Should crew members have contact info or links like users do?
-- **Q-CREW-5:** Which crew members appear in "Meet the Crew" on the Landing page: all, or selected ones?
+- **Q-CREW-3:** **Partly answered (v0.5):** "mentor" became `User.is_mentor`, and "experience" became the `User Experience` table. Still open: does "links" need its own field, or is `User Contact` enough?
+- ~~**Q-CREW-4:** Should crew members have contact info or links like users do?~~ **Answered (v0.5):** mentors are users, so they have `User Contact` and `User Photo`.
+- **Q-CREW-5:** Which mentors appear in "Meet the Crew" on the Landing page: all, or selected ones?
 
 ### 11.12 Investors (Optional)
 - **Q-INV-1:** Are Investors in scope now or later? If in scope: are they users or admin-managed profiles, and what can they do (view startups, be booked)?
 
 ### 11.13 Profile and Settings
-- **Q-PR-1:** What is on the Profile page: edit own info/photo/contacts, plus "my startups" (manage own startups)?
-- **Q-PR-2:** Are startups created and edited from Profile > My Startups?
+- **Q-PR-1:** What is on the Profile page: edit own info/photo/contacts/experience? ("my startups" is a separate page since 2026-10-24.)
+- **Q-PR-2:** Are startups created and edited from the My Startups page (`/MyStartups`)? The wireframe only shows the list.
 - **Q-PR-3:** What is on the Settings page: change password, email, delete account, notifications?
-- **Q-PR-4:** Do mentors/crew have a profile page to manage their availability and bookings?
+- **Q-PR-4:** Do mentors manage availability and bookings from the mentor booking page (Q-BOOK-14) or from Profile?
 
 ### 11.14 Data model
 - **Q-DATA-1:** Are all columns not marked "nullable" required?
 - **Q-DATA-2:** What exactly is `address_key`: a file path, a cloud storage key (S3/Azure Blob), or a URL? Where will files be stored?
-- **Q-DATA-3:** Should `email` be unique on User and on Crew Member?
-- **Q-DATA-4:** "Tags" vs "Category": are they the same thing?
+- **Q-DATA-3:** Should `email` be unique on User? (The Crew Member table was removed in v0.5.)
+- **Q-DATA-4:** "Tags" vs "Category". **Partly answered (2026-10-24):** they are separate tables. `Tag` is for News and `Category` is for Startups. Startup tags are still open (Q-SU-14).
 - **Q-DATA-5:** Should deletes be soft (via `is_active`) or hard? Tables like Startup Photo have no `is_active`.
-- **Q-DATA-6:** Should `date_modified` on Toolkit Glossary and Category be nullable like the other tables?
+- **Q-DATA-6:** **Mostly answered (2026-10-24):** Toolkit Glossary and Category `date_modified` are nullable, and User Experience `title`/`description` are nullable. Still open: should `User Experience.date_modified` be nullable like everywhere else?
 - **Q-DATA-7:** Primary key type: int auto-increment or GUID?
 - **Q-DATA-8:** Do you want the database naming in snake_case, as in the sheet (`user_id`), in PostgreSQL?
 
