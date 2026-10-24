@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Not "Startup.Lab": a root namespace named Startup hides the Startup entity class (CS0118). -->
+    <RootNamespace>StartupLab</RootNamespace>
   </PropertyGroup>
 
 </Project>

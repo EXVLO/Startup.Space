@@ -1,6 +1,6 @@
 # Founder Pathway — Backend Implementation Plan
 
-> **Status:** Draft v0.1. Backend only: entities, EF Core, repository, service, controller, dependency injection, tests. Views are mentioned only where the controller needs them.
+> **Status:** Draft v0.2. Backend only: entities, EF Core, repository, service, controller, dependency injection, tests. Views are mentioned only where the controller needs them.
 > This document explains **what** to build and **why**, step by step. It contains no code; each step describes the classes, fields, methods, and rules so whoever implements it can write the code.
 > Related: [`overview_documentation.md`](overview_documentation.md) (requirements, open questions), [`structure_documentation.md`](structure_documentation.md) (folders, conventions), [`development_workflow_documentation.md`](development_workflow_documentation.md) (pre-push checks).
 
@@ -29,7 +29,7 @@ Following `structure_documentation.md` §1 ("one repository per main entity grou
 
 | File | New or edited | Step |
 |---|---|---|
-| `MentorBooking.csproj` | edited (packages) | 1 |
+| `Startup.Lab.csproj` | edited (packages) | 1 |
 | `appsettings.json` | edited (connection string key) | 1 |
 | `Program.cs` | edited (database and DI registration) | 1, 9 |
 | `Data/ApplicationDbContext.cs` | new (first database feature) or edited | 1, 4 |
@@ -246,7 +246,7 @@ Don't put sample data inside migrations (EF Core "seed data"). Migrations also r
 
 ## 12. Tests
 
-There is no test project yet (structure §4, Q-TECH-7). When `MentorBooking.Tests` exists, add these tests.
+There is no test project yet (structure §4, Q-TECH-7). When `Startup.Lab.Tests` exists, add these tests.
 
 **Service unit tests** (with a fake repository):
 | Scenario | Expected result |
@@ -338,3 +338,4 @@ Answer format: "A-2: …" or "Q-PW-1: …".
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-10-20 | First version: backend plan for Founder Pathways (read-only Phase 1, admin outline Phase 2). | Nikoloz Khidasheli |
+| 0.2 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab (`Startup.Lab.csproj`, `Startup.Lab.Tests`). | Aleksandre Nadirashvili |

@@ -1,6 +1,6 @@
 # Development Workflow Documentation
 
-> **Status:** Draft v0.3.
+> **Status:** Draft v0.4.
 > Commands to run before every push. They mirror the checks in `.github/workflows/build.yml`, so if they pass locally, they pass on GitHub.
 > Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md).
 
@@ -17,7 +17,7 @@
 dotnet tool install --global dotnet-ef
 ```
 
-All commands are run from the project root (the folder with `MentorBooking.csproj`).
+All commands are run from the project root (the folder with `Startup.Lab.csproj`).
 
 ---
 
@@ -47,7 +47,7 @@ The first command fixes formatting. The second is exactly what CI runs: no outpu
 dotnet list package --vulnerable --include-transitive
 ```
 
-Passing output: `The given project 'MentorBooking' has no vulnerable packages given the current sources.`
+Passing output: `The given project 'Startup.Lab' has no vulnerable packages given the current sources.`
 
 If a package is listed:
 
@@ -125,3 +125,4 @@ Pushing new commits to the same branch re-runs the checks.
 | 0.1 | 2026-10-18 | First version: pre-push checks, branch, commit, and pull request workflow. | Aleksandre Nadirashvili |
 | 0.2 | 2026-10-18 | Removed branch, commit, and pull request sections. Kept only pre-push checks and CI fixes. | Aleksandre Nadirashvili |
 | 0.3 | 2026-10-18 | Added CodeQL to the CI failure table. | Aleksandre Nadirashvili |
+| 0.4 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab. | Aleksandre Nadirashvili |
