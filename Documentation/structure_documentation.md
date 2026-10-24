@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.3. This is the planned structure only. No folders or files have been created yet.
+> **Status:** Draft v0.5. This is the planned structure only. No folders or files have been created yet.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 
 ---
@@ -9,6 +9,7 @@ The layer order follows Section 3.1 of the overview: **Controller -> Service -> 
 
 ## 1. Conventions
 
+- **Namespaces start with `StartupLab`** and follow the folder (`StartupLab.Services`, `StartupLab.Models.Entities`). Don't use `Startup.Lab`: a root namespace named `Startup` hides the `Startup` entity class (error CS0118).
 - **One class or interface per file.** The file name matches the type name (`BookingService.cs` contains `BookingService`).
 - **Interfaces in an `Interfaces/` subfolder** inside `Services/` and inside `Repositories/`. Each implementation has its own interface (`IBookingService` / `BookingService`).
 - **Controllers depend only on service interfaces.** Services depend only on repository interfaces. Repositories are the only layer that uses the `DbContext`.
@@ -21,7 +22,8 @@ The layer order follows Section 3.1 of the overview: **Controller -> Service -> 
 Items marked **(pending)** depend on an open question and may change or be removed.
 
 ```
-MentorBooking/
+Startup.Lab/
+├── Startup.Lab.csproj               # RootNamespace = StartupLab
 ├── Program.cs
 ├── appsettings.json
 ├── appsettings.Development.json
@@ -33,7 +35,8 @@ MentorBooking/
 │   ├── FoundersController.cs        # /Founders, /Founders/{id}
 │   ├── NewsController.cs            # /News
 │   ├── AboutUsController.cs         # /AboutUs, /AboutUs/Team
-│   ├── ProfileController.cs         # /Profile (profile, my startups)
+│   ├── ProfileController.cs         # /Profile
+│   ├── MyStartupsController.cs      # /MyStartups (the logged-in user's startups)
 │   ├── SettingsController.cs        # /Settings
 │   ├── BookingController.cs         # /Booking (users book a mentor); mentor booking page (pending: Q-BOOK-14)
 │   ├── AdminController.cs           # give mentor role to a user (pending: route and other admin pages, Q-ROLE-4)
@@ -53,6 +56,8 @@ MentorBooking/
 │   │   ├── StartupLink.cs
 │   │   ├── Category.cs
 │   │   ├── StartupCategory.cs       # join table
+│   │   ├── Tag.cs
+│   │   ├── NewsTag.cs               # join table
 │   │   ├── UserStartup.cs           # join table
 │   │   ├── News.cs
 │   │   ├── NewsPhoto.cs
@@ -76,7 +81,9 @@ MentorBooking/
 │       │   ├── StartupListViewModel.cs
 │       │   ├── StartupCardViewModel.cs
 │       │   ├── StartupDetailsViewModel.cs
-│       │   └── StartupFormViewModel.cs      # create/edit from Profile > My Startups (pending: Q-PR-2)
+│       │   └── StartupFormViewModel.cs      # create/edit from My Startups (pending: Q-PR-2)
+│       ├── MyStartups/
+│       │   └── MyStartupsViewModel.cs       # own startup cards, search, tag filter (pending: Q-SU-14)
 │       ├── Founders/
 │       │   ├── FounderListViewModel.cs
 │       │   ├── FounderCardViewModel.cs
@@ -146,8 +153,8 @@ MentorBooking/
 │   │   └── IBookingRepository.cs    # (pending: Q-BOOK-3)
 │   ├── UserRepository.cs            # User, UserPhoto, UserContact, UserExperience (mentors are users with IsMentor)
 │   ├── StartupRepository.cs         # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
-│   ├── NewsRepository.cs            # News, NewsPhoto, NewsVideo
-│   ├── CategoryRepository.cs        # Category
+│   ├── NewsRepository.cs            # News, NewsPhoto, NewsVideo, NewsTag
+│   ├── CategoryRepository.cs        # Category, Tag
 │   ├── ToolkitRepository.cs         # ToolkitVideo, ToolkitDocument, ToolkitGlossary
 │   ├── ChecklistRepository.cs       # ToolkitChecklist, UserChecklist
 │   └── BookingRepository.cs         # (pending: Q-BOOK-3)
@@ -171,7 +178,8 @@ MentorBooking/
 │   ├── Founders/                    # Index, Details
 │   ├── News/                        # Index
 │   ├── AboutUs/                     # Index, Team
-│   ├── Profile/                     # Index, MyStartups
+│   ├── Profile/                     # Index
+│   ├── MyStartups/                  # Index
 │   ├── Settings/                    # Index
 │   ├── Booking/                     # Index, Mentor (pending: Q-BOOK-14)
 │   ├── Admin/                       # Users (give mentor role) (pending: Q-ROLE-4)
@@ -187,12 +195,12 @@ MentorBooking/
 |---|---|---|
 | `AccountService` | Login, register, logout, forgot password | `IUserRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
 | `UserService` | Profile data, photos, contacts, experience, settings | `IUserRepository` |
-| `StartupService` | Startup list (search, filters, pagination), details, create/edit | `IStartupRepository`, `ICategoryRepository` |
+| `StartupService` | Startup list (search, filters, pagination), details, create/edit, the user's own startups for My Startups | `IStartupRepository`, `ICategoryRepository` |
 | `FounderService` | Founder list and details (every user is a founder) | `IUserRepository`, `IStartupRepository` |
-| `NewsService` | News list (pagination, tags), featured news | `INewsRepository` |
+| `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsRepository`, `ICategoryRepository` |
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserRepository` |
 | `AdminService` | Give the mentor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserRepository` |
-| `CategoryService` | Categories / tags for filters | `ICategoryRepository` |
+| `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryRepository` |
 | `ToolkitService` | Toolkit videos, documents, glossary, pathways | `IToolkitRepository` |
 | `ChecklistService` | Founder checklist and progress | `IChecklistRepository` |
 | `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingRepository`, `IUserRepository` |
@@ -205,7 +213,7 @@ MentorBooking/
 - **Admin area:** only "give mentor role" is decided (`AdminController` / `AdminService` above). Other admin pages and the admin route are not defined (Q-ROLE-4).
 - **Mentor booking page:** decided to exist (mentors only), but its content and route are WIP (Q-BOOK-14).
 - **Founder Pathways / Requirements data:** no tables in the Excel yet (Q-TK-1, Q-TK-2). A proposed backend plan for Founder Pathways is in [`pathway_backend_plan.md`](pathway_backend_plan.md).
-- **Test project:** a separate `MentorBooking.Tests` project, once Q-TECH-7 is answered.
+- **Test project:** a separate `Startup.Lab.Tests` project, once Q-TECH-7 is answered.
 
 ---
 
@@ -216,3 +224,5 @@ MentorBooking/
 | 0.1 | 2026-10-17 | Moved out of `overview_documentation.md` (was Section 9). | Aleksandre Nadirashvili |
 | 0.2 | 2026-10-20 | Linked the Founder Pathways backend plan from Section 4. | Nikoloz Khidasheli |
 | 0.3 | 2026-10-23 | Followed the new role model (overview Section 7.1). Removed `CrewMember`/`CrewMemberPhoto` entities and their service and repository. Added the `UserExperience` entity, `MentorService`, `AdminService`, `AdminController`, and the mentor booking page (pending). | Aleksandre Nadirashvili |
+| 0.4 | 2026-10-24 | Synced with the updated Excel. Added the `Tag` and `NewsTag` entities. Added `MyStartupsController`, its view and view model (route `/MyStartups`), moved out of Profile. | Aleksandre Nadirashvili |
+| 0.5 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab. Root folder and project file are `Startup.Lab`; C# namespaces start with `StartupLab` (see Conventions). | Aleksandre Nadirashvili |
