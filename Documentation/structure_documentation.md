@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.2. This is the planned structure only. No folders or files have been created yet.
+> **Status:** Draft v0.3. This is the planned structure only. No folders or files have been created yet.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 
 ---
@@ -35,15 +35,17 @@ MentorBooking/
 │   ├── AboutUsController.cs         # /AboutUs, /AboutUs/Team
 │   ├── ProfileController.cs         # /Profile (profile, my startups)
 │   ├── SettingsController.cs        # /Settings
-│   ├── BookingController.cs         # /Booking
+│   ├── BookingController.cs         # /Booking (users book a mentor); mentor booking page (pending: Q-BOOK-14)
+│   ├── AdminController.cs           # give mentor role to a user (pending: route and other admin pages, Q-ROLE-4)
 │   ├── ArchiveController.cs         # /Archive
 │   └── ToolkitController.cs         # /Toolkit, /Toolkit/Videos, /Toolkit/Pathway
 │
 ├── Models/
 │   ├── Entities/                    # one class per database table (Section 6)
-│   │   ├── User.cs
+│   │   ├── User.cs                  # includes IsMentor, IsAdmin (no IsFounder)
 │   │   ├── UserPhoto.cs
 │   │   ├── UserContact.cs
+│   │   ├── UserExperience.cs
 │   │   ├── Startup.cs
 │   │   ├── StartupPhoto.cs
 │   │   ├── StartupVideo.cs
@@ -55,8 +57,6 @@ MentorBooking/
 │   │   ├── News.cs
 │   │   ├── NewsPhoto.cs
 │   │   ├── NewsVideo.cs
-│   │   ├── CrewMember.cs
-│   │   ├── CrewMemberPhoto.cs
 │   │   ├── ToolkitVideo.cs
 │   │   ├── ToolkitDocument.cs
 │   │   ├── ToolkitGlossary.cs
@@ -86,9 +86,12 @@ MentorBooking/
 │       │   └── NewsCardViewModel.cs
 │       ├── AboutUs/
 │       │   ├── AboutUsViewModel.cs
-│       │   └── CrewMemberCardViewModel.cs
+│       │   └── MentorCardViewModel.cs       # also used by Landing "Meet the Crew"
 │       ├── Booking/
-│       │   └── BookingViewModel.cs
+│       │   ├── BookingViewModel.cs
+│       │   └── MentorBookingViewModel.cs    # mentor booking page (pending: Q-BOOK-14)
+│       ├── Admin/
+│       │   └── UserRoleViewModel.cs         # list users, toggle mentor role (pending: Q-ROLE-4)
 │       ├── Archive/
 │       │   └── ArchiveViewModel.cs
 │       ├── Toolkit/
@@ -110,7 +113,8 @@ MentorBooking/
 │   │   ├── IStartupService.cs
 │   │   ├── IFounderService.cs
 │   │   ├── INewsService.cs
-│   │   ├── ICrewMemberService.cs
+│   │   ├── IMentorService.cs
+│   │   ├── IAdminService.cs
 │   │   ├── ICategoryService.cs
 │   │   ├── IToolkitService.cs
 │   │   ├── IChecklistService.cs
@@ -122,7 +126,8 @@ MentorBooking/
 │   ├── StartupService.cs
 │   ├── FounderService.cs
 │   ├── NewsService.cs
-│   ├── CrewMemberService.cs
+│   ├── MentorService.cs
+│   ├── AdminService.cs
 │   ├── CategoryService.cs
 │   ├── ToolkitService.cs
 │   ├── ChecklistService.cs
@@ -135,15 +140,13 @@ MentorBooking/
 │   │   ├── IUserRepository.cs
 │   │   ├── IStartupRepository.cs
 │   │   ├── INewsRepository.cs
-│   │   ├── ICrewMemberRepository.cs
 │   │   ├── ICategoryRepository.cs
 │   │   ├── IToolkitRepository.cs
 │   │   ├── IChecklistRepository.cs
 │   │   └── IBookingRepository.cs    # (pending: Q-BOOK-3)
-│   ├── UserRepository.cs            # User, UserPhoto, UserContact
+│   ├── UserRepository.cs            # User, UserPhoto, UserContact, UserExperience (mentors are users with IsMentor)
 │   ├── StartupRepository.cs         # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
 │   ├── NewsRepository.cs            # News, NewsPhoto, NewsVideo
-│   ├── CrewMemberRepository.cs      # CrewMember, CrewMemberPhoto
 │   ├── CategoryRepository.cs        # Category
 │   ├── ToolkitRepository.cs         # ToolkitVideo, ToolkitDocument, ToolkitGlossary
 │   ├── ChecklistRepository.cs       # ToolkitChecklist, UserChecklist
@@ -170,7 +173,8 @@ MentorBooking/
 │   ├── AboutUs/                     # Index, Team
 │   ├── Profile/                     # Index, MyStartups
 │   ├── Settings/                    # Index
-│   ├── Booking/                     # Index
+│   ├── Booking/                     # Index, Mentor (pending: Q-BOOK-14)
+│   ├── Admin/                       # Users (give mentor role) (pending: Q-ROLE-4)
 │   ├── Archive/                     # Index
 │   └── Toolkit/                     # Index, Videos, Pathway, Checklist
 │
@@ -182,22 +186,24 @@ MentorBooking/
 | Service | Responsibility | Uses repositories |
 |---|---|---|
 | `AccountService` | Login, register, logout, forgot password | `IUserRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
-| `UserService` | Profile data, photos, contacts, settings | `IUserRepository` |
+| `UserService` | Profile data, photos, contacts, experience, settings | `IUserRepository` |
 | `StartupService` | Startup list (search, filters, pagination), details, create/edit | `IStartupRepository`, `ICategoryRepository` |
-| `FounderService` | Founder list and details (users who are founders) | `IUserRepository`, `IStartupRepository` |
+| `FounderService` | Founder list and details (every user is a founder) | `IUserRepository`, `IStartupRepository` |
 | `NewsService` | News list (pagination, tags), featured news | `INewsRepository` |
-| `CrewMemberService` | Crew / team for About Us and Landing | `ICrewMemberRepository` |
+| `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserRepository` |
+| `AdminService` | Give the mentor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserRepository` |
 | `CategoryService` | Categories / tags for filters | `ICategoryRepository` |
 | `ToolkitService` | Toolkit videos, documents, glossary, pathways | `IToolkitRepository` |
 | `ChecklistService` | Founder checklist and progress | `IChecklistRepository` |
-| `BookingService` | Sessions with crew/mentors, availability | `IBookingRepository`, `ICrewMemberRepository` |
+| `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingRepository`, `IUserRepository` |
 | `ArchiveService` | Inactive startups and founders | `IStartupRepository`, `IUserRepository` |
 | `FileStorageService` | Saving/reading files referenced by `address_key` | none (file storage, pending Q-DATA-2) |
 
 ## 4. Not in the structure yet
 
 - **Investors:** optional in the Excel. No files until Q-INV-1 is answered.
-- **Admin area:** `is_admin` exists, but no admin pages are defined (Q-ROLE-4).
+- **Admin area:** only "give mentor role" is decided (`AdminController` / `AdminService` above). Other admin pages and the admin route are not defined (Q-ROLE-4).
+- **Mentor booking page:** decided to exist (mentors only), but its content and route are WIP (Q-BOOK-14).
 - **Founder Pathways / Requirements data:** no tables in the Excel yet (Q-TK-1, Q-TK-2). A proposed backend plan for Founder Pathways is in [`pathway_backend_plan.md`](pathway_backend_plan.md).
 - **Test project:** a separate `MentorBooking.Tests` project, once Q-TECH-7 is answered.
 
@@ -209,3 +215,4 @@ MentorBooking/
 |---|---|---|---|
 | 0.1 | 2026-10-17 | Moved out of `overview_documentation.md` (was Section 9). | Aleksandre Nadirashvili |
 | 0.2 | 2026-10-20 | Linked the Founder Pathways backend plan from Section 4. | Nikoloz Khidasheli |
+| 0.3 | 2026-10-23 | Followed the new role model (overview Section 7.1). Removed `CrewMember`/`CrewMemberPhoto` entities and their service and repository. Added the `UserExperience` entity, `MentorService`, `AdminService`, `AdminController`, and the mentor booking page (pending). | Aleksandre Nadirashvili |
