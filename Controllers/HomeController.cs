@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MentorBooking.Models;
+using StartupLab.Models;
 
-namespace MentorBooking.Controllers;
+namespace StartupLab.Controllers;
 
 public class HomeController : Controller
 {
