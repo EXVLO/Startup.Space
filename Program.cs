@@ -1,7 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using StartupLab.Data;
+using StartupLab.Models.Entities;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .UseSnakeCaseNamingConvention());
+
+builder.Services.AddIdentityCore<User>(options => options.User.RequireUniqueEmail = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 var app = builder.Build();
 
