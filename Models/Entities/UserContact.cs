@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// A way to contact a user, for example an email address or a phone number. A user can have many.
+/// </summary>
 public class UserContact
 {
     public int Id { get; set; }

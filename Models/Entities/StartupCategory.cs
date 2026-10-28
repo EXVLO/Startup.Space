@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// Links a startup to a category. A startup can have many categories.
+/// </summary>
 public class StartupCategory
 {
     public int StartupId { get; set; }

@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// One experience entry on a user's profile, for example a past job. A user can have many.
+/// </summary>
 public class UserExperience
 {
     public int Id { get; set; }

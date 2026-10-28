@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// A news item on the News page.
+/// </summary>
 public class News
 {
     public int Id { get; set; }
@@ -12,6 +15,9 @@ public class News
 
     public DateTime? DateModified { get; set; }
 
+    /// <summary>
+    /// True for the featured ("main") news item at the top of the News page.
+    /// </summary>
     public bool IsPrimary { get; set; }
 
     public ICollection<NewsPhoto> Photos { get; set; } = [];

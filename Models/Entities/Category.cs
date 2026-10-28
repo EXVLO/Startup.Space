@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// A category used to group and filter startups.
+/// </summary>
 public class Category
 {
     public int Id { get; set; }
@@ -12,6 +15,9 @@ public class Category
 
     public DateTime? DateModified { get; set; }
 
+    /// <summary>
+    /// False when the category is no longer used.
+    /// </summary>
     public bool IsActive { get; set; } = true;
 
     public ICollection<StartupCategory> StartupCategories { get; set; } = [];

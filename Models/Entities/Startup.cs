@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// A startup that its founders publish on the site.
+/// </summary>
 public class Startup
 {
     public int Id { get; set; }
@@ -12,6 +15,9 @@ public class Startup
 
     public DateTime? DateModified { get; set; }
 
+    /// <summary>
+    /// False when the startup is inactive. Inactive startups are shown in the Archive.
+    /// </summary>
     public bool IsActive { get; set; } = true;
 
     public ICollection<StartupPhoto> Photos { get; set; } = [];
