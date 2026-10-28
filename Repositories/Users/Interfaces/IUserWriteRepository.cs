@@ -2,27 +2,48 @@ using StartupLab.Models.Entities;
 
 namespace StartupLab.Repositories.Users.Interfaces;
 
+/// <summary>
+/// Changes user data: profile, mentor role, contacts and experiences.
+/// </summary>
 public interface IUserWriteRepository
 {
+    /// <summary>
+    /// Updates the user's name, surname and description. Returns false if the user doesn't exist.
+    /// </summary>
     Task<bool> UpdateProfileAsync(int userId, string name, string surname, string? description, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Gives or removes the mentor role. Returns false if the user doesn't exist.
+    /// </summary>
     Task<bool> SetMentorAsync(int userId, bool isMentor, CancellationToken cancellationToken);
 
-    /// <returns>The previous photo's address key, or null if the user had no photo.</returns>
-    Task<string?> SetPhotoAsync(int userId, string addressKey, CancellationToken cancellationToken);
-
-    /// <returns>The removed photo's address key, or null if the user had no photo.</returns>
-    Task<string?> RemovePhotoAsync(int userId, CancellationToken cancellationToken);
-
+    /// <summary>
+    /// Adds a contact to the user and returns it with its new id.
+    /// </summary>
     Task<UserContact> AddContactAsync(int userId, string contactInfo, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Changes a contact. Returns false if the contact doesn't exist or belongs to another user.
+    /// </summary>
     Task<bool> UpdateContactAsync(int userId, int contactId, string contactInfo, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Deletes a contact. Returns false if the contact doesn't exist or belongs to another user.
+    /// </summary>
     Task<bool> DeleteContactAsync(int userId, int contactId, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Adds an experience entry to the user and returns it with its new id.
+    /// </summary>
     Task<UserExperience> AddExperienceAsync(int userId, string? title, string? description, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Changes an experience entry. Returns false if it doesn't exist or belongs to another user.
+    /// </summary>
     Task<bool> UpdateExperienceAsync(int userId, int experienceId, string? title, string? description, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Deletes an experience entry. Returns false if it doesn't exist or belongs to another user.
+    /// </summary>
     Task<bool> DeleteExperienceAsync(int userId, int experienceId, CancellationToken cancellationToken);
 }

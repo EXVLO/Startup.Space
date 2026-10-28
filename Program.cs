@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StartupLab.Data;
+using StartupLab.Extensions;
 using StartupLab.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddIdentityCore<User>(options => options.User.RequireUniqueEmail = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

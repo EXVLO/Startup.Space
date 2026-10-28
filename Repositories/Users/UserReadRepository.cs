@@ -5,6 +5,9 @@ using StartupLab.Repositories.Users.Interfaces;
 
 namespace StartupLab.Repositories.Users;
 
+/// <summary>
+/// EF Core implementation of <see cref="IUserReadRepository"/>.
+/// </summary>
 public class UserReadRepository(ApplicationDbContext context) : IUserReadRepository
 {
     public Task<User?> GetByIdAsync(int userId, CancellationToken cancellationToken) =>
