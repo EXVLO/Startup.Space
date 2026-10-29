@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.7. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/` and `Repositories/UserPhotos/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.8. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/` and `Repositories/UserContacts/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -146,7 +146,7 @@ Startup.Lab/
 │   └── FileStorageService.cs        # (pending: Q-DATA-2)
 │
 ├── Repositories/                    # one folder per entity group; every group has the same four files as Users/
-│   ├── Users/                       # User, UserContact, UserExperience (mentors are users with IsMentor)
+│   ├── Users/                       # User, UserExperience (mentors are users with IsMentor)
 │   │   ├── Interfaces/
 │   │   │   ├── IUserReadRepository.cs
 │   │   │   └── IUserWriteRepository.cs
@@ -158,6 +158,12 @@ Startup.Lab/
 │   │   │   └── IUserPhotoWriteRepository.cs
 │   │   ├── UserPhotoReadRepository.cs
 │   │   └── UserPhotoWriteRepository.cs
+│   ├── UserContacts/                # UserContact (a user can have many; every change is checked against the owner)
+│   │   ├── Interfaces/
+│   │   │   ├── IUserContactReadRepository.cs
+│   │   │   └── IUserContactWriteRepository.cs
+│   │   ├── UserContactReadRepository.cs
+│   │   └── UserContactWriteRepository.cs
 │   ├── Startups/                    # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
 │   ├── NewsItems/                   # News, NewsPhoto, NewsVideo, NewsTag (not "News/", see Conventions)
 │   ├── Categories/                  # Category, Tag
@@ -200,7 +206,7 @@ Startup.Lab/
 | Service | Responsibility | Uses repositories |
 |---|---|---|
 | `AccountService` | Login, register, logout, forgot password | `IUserReadRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
-| `UserService` | Profile data, photos, contacts, experience, settings | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoReadRepository`, `IUserPhotoWriteRepository` |
+| `UserService` | Profile data, photos, contacts, experience, settings | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoReadRepository`, `IUserPhotoWriteRepository`, `IUserContactReadRepository`, `IUserContactWriteRepository` |
 | `StartupService` | Startup list (search, filters, pagination), details, create/edit, the user's own startups for My Startups | `IStartupReadRepository`, `IStartupWriteRepository`, `ICategoryReadRepository` |
 | `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
 | `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsReadRepository`, `ICategoryReadRepository` |
@@ -234,3 +240,4 @@ Startup.Lab/
 | 0.5 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab. Root folder and project file are `Startup.Lab`; C# namespaces start with `StartupLab` (see Conventions). | Aleksandre Nadirashvili |
 | 0.6 | 2026-10-27 | Repositories split into one folder per entity group, each with a read and a write repository (Conventions, folder tree, service table). Added the first group, `Repositories/Users/`. The News group folder is `NewsItems/` to avoid hiding the `News` entity. | Aleksandre Nadirashvili |
 | 0.7 | 2026-10-28 | Added the `Repositories/UserPhotos/` group; photo methods moved out of `Users/`. Dependency injection now lives in `AddApplicationServices` (`Extensions/ServiceCollectionExtensions.cs`), called from `Program.cs`. Status updated to list what is built. Linked the new `coding_style_documentation.md`. | Aleksandre Nadirashvili |
+| 0.8 | 2026-10-28 | Added the `Repositories/UserContacts/` group; contact methods moved out of `Users/`. | Aleksandre Nadirashvili |

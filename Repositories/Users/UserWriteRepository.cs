@@ -31,33 +31,6 @@ public class UserWriteRepository(ApplicationDbContext context) : IUserWriteRepos
                 .SetProperty(u => u.ConcurrencyStamp, Guid.NewGuid().ToString()),
                 cancellationToken) > 0;
 
-    public async Task<UserContact> AddContactAsync(int userId, string contactInfo, CancellationToken cancellationToken)
-    {
-        var contact = new UserContact
-        {
-            UserId = userId,
-            ContactInfo = contactInfo,
-            DateCreated = DateTime.UtcNow
-        };
-
-        context.UserContacts.Add(contact);
-        await context.SaveChangesAsync(cancellationToken);
-        return contact;
-    }
-
-    public async Task<bool> UpdateContactAsync(int userId, int contactId, string contactInfo, CancellationToken cancellationToken) =>
-        await context.UserContacts
-            .Where(c => c.Id == contactId && c.UserId == userId)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(c => c.ContactInfo, contactInfo)
-                .SetProperty(c => c.DateModified, DateTime.UtcNow),
-                cancellationToken) > 0;
-
-    public async Task<bool> DeleteContactAsync(int userId, int contactId, CancellationToken cancellationToken) =>
-        await context.UserContacts
-            .Where(c => c.Id == contactId && c.UserId == userId)
-            .ExecuteDeleteAsync(cancellationToken) > 0;
-
     public async Task<UserExperience> AddExperienceAsync(int userId, string? title, string? description, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;

@@ -3,7 +3,7 @@ using StartupLab.Models.Entities;
 namespace StartupLab.Repositories.Users.Interfaces;
 
 /// <summary>
-/// Changes user data: profile, mentor role, contacts and experiences.
+/// Changes user data: profile, mentor role and experiences.
 /// </summary>
 public interface IUserWriteRepository
 {
@@ -16,21 +16,6 @@ public interface IUserWriteRepository
     /// Gives or removes the mentor role. Returns false if the user doesn't exist.
     /// </summary>
     Task<bool> SetMentorAsync(int userId, bool isMentor, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Adds a contact to the user and returns it with its new id.
-    /// </summary>
-    Task<UserContact> AddContactAsync(int userId, string contactInfo, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Changes a contact. Returns false if the contact doesn't exist or belongs to another user.
-    /// </summary>
-    Task<bool> UpdateContactAsync(int userId, int contactId, string contactInfo, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Deletes a contact. Returns false if the contact doesn't exist or belongs to another user.
-    /// </summary>
-    Task<bool> DeleteContactAsync(int userId, int contactId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Adds an experience entry to the user and returns it with its new id.
