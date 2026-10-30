@@ -2,7 +2,7 @@
 
 > **Status:** Draft v0.4.
 > Commands to run before every push. They mirror the checks in `.github/workflows/build.yml`, so if they pass locally, they pass on GitHub.
-> Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md).
+> Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md), [`coding_style_documentation.md`](coding_style_documentation.md).
 
 ---
 

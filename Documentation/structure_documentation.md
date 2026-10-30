@@ -1,7 +1,8 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.5. This is the planned structure only. No folders or files have been created yet.
+> **Status:** Draft v0.8. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/` and `Repositories/UserContacts/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
+> How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
 ---
 
@@ -14,8 +15,10 @@ The layer order follows Section 3.1 of the overview: **Controller -> Service -> 
 - **Interfaces in an `Interfaces/` subfolder** inside `Services/` and inside `Repositories/`. Each implementation has its own interface (`IBookingService` / `BookingService`).
 - **Controllers depend only on service interfaces.** Services depend only on repository interfaces. Repositories are the only layer that uses the `DbContext`.
 - **Entities (database tables) and ViewModels (page data) are separate.** Views never receive entities directly.
-- **One repository per main entity group** (for example `StartupRepository` also handles Startup Photo/Video/Document/Link). This avoids one repository per small table.
-- **Dependency injection:** every interface/implementation pair is registered in `Program.cs` (or in one `Extensions/ServiceCollectionExtensions.cs` file).
+- **One folder per main entity group in `Repositories/`** (for example `Startups/` also handles Startup Photo/Video/Document/Link). This avoids one repository per small table.
+- **Each group has a read repository and a write repository** (`UserReadRepository` / `UserWriteRepository`), each with its own interface in the group's `Interfaces/` subfolder. Read repositories only run no-tracking queries. A service depends only on the side it needs, so read-only services never see write methods.
+- **A group folder must not have the same name as an entity.** A folder named `News` creates the namespace `StartupLab.Repositories.News`, which hides the `News` entity (error CS0118, same as `Startup` above). The News group therefore uses `NewsItems/`.
+- **Dependency injection:** every interface/implementation pair is registered in `AddApplicationServices` in `Extensions/ServiceCollectionExtensions.cs`, and `Program.cs` calls it after registering the database. Everything is registered as scoped, because repositories use the scoped `DbContext`.
 
 ## 2. Folder tree
 
@@ -142,22 +145,31 @@ Startup.Lab/
 │   ├── ArchiveService.cs
 │   └── FileStorageService.cs        # (pending: Q-DATA-2)
 │
-├── Repositories/
-│   ├── Interfaces/
-│   │   ├── IUserRepository.cs
-│   │   ├── IStartupRepository.cs
-│   │   ├── INewsRepository.cs
-│   │   ├── ICategoryRepository.cs
-│   │   ├── IToolkitRepository.cs
-│   │   ├── IChecklistRepository.cs
-│   │   └── IBookingRepository.cs    # (pending: Q-BOOK-3)
-│   ├── UserRepository.cs            # User, UserPhoto, UserContact, UserExperience (mentors are users with IsMentor)
-│   ├── StartupRepository.cs         # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
-│   ├── NewsRepository.cs            # News, NewsPhoto, NewsVideo, NewsTag
-│   ├── CategoryRepository.cs        # Category, Tag
-│   ├── ToolkitRepository.cs         # ToolkitVideo, ToolkitDocument, ToolkitGlossary
-│   ├── ChecklistRepository.cs       # ToolkitChecklist, UserChecklist
-│   └── BookingRepository.cs         # (pending: Q-BOOK-3)
+├── Repositories/                    # one folder per entity group; every group has the same four files as Users/
+│   ├── Users/                       # User, UserExperience (mentors are users with IsMentor)
+│   │   ├── Interfaces/
+│   │   │   ├── IUserReadRepository.cs
+│   │   │   └── IUserWriteRepository.cs
+│   │   ├── UserReadRepository.cs
+│   │   └── UserWriteRepository.cs
+│   ├── UserPhotos/                  # UserPhoto (one photo per user; set returns the old address_key so the file can be deleted)
+│   │   ├── Interfaces/
+│   │   │   ├── IUserPhotoReadRepository.cs
+│   │   │   └── IUserPhotoWriteRepository.cs
+│   │   ├── UserPhotoReadRepository.cs
+│   │   └── UserPhotoWriteRepository.cs
+│   ├── UserContacts/                # UserContact (a user can have many; every change is checked against the owner)
+│   │   ├── Interfaces/
+│   │   │   ├── IUserContactReadRepository.cs
+│   │   │   └── IUserContactWriteRepository.cs
+│   │   ├── UserContactReadRepository.cs
+│   │   └── UserContactWriteRepository.cs
+│   ├── Startups/                    # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
+│   ├── NewsItems/                   # News, NewsPhoto, NewsVideo, NewsTag (not "News/", see Conventions)
+│   ├── Categories/                  # Category, Tag
+│   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
+│   ├── Checklists/                  # ToolkitChecklist, UserChecklist
+│   └── Bookings/                    # (pending: Q-BOOK-3)
 │
 ├── Data/
 │   ├── ApplicationDbContext.cs
@@ -168,7 +180,7 @@ Startup.Lab/
 │   └── Migrations/                  # generated by EF Core, never edited by hand
 │
 ├── Extensions/
-│   └── ServiceCollectionExtensions.cs   # registers all services and repositories for DI
+│   └── ServiceCollectionExtensions.cs   # AddApplicationServices: registers all services and repositories for DI
 │
 ├── Views/
 │   ├── Shared/                      # _Layout (Header, Nav Bar, Footer), Error, partials
@@ -193,18 +205,18 @@ Startup.Lab/
 
 | Service | Responsibility | Uses repositories |
 |---|---|---|
-| `AccountService` | Login, register, logout, forgot password | `IUserRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
-| `UserService` | Profile data, photos, contacts, experience, settings | `IUserRepository` |
-| `StartupService` | Startup list (search, filters, pagination), details, create/edit, the user's own startups for My Startups | `IStartupRepository`, `ICategoryRepository` |
-| `FounderService` | Founder list and details (every user is a founder) | `IUserRepository`, `IStartupRepository` |
-| `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsRepository`, `ICategoryRepository` |
-| `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserRepository` |
-| `AdminService` | Give the mentor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserRepository` |
-| `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryRepository` |
-| `ToolkitService` | Toolkit videos, documents, glossary, pathways | `IToolkitRepository` |
-| `ChecklistService` | Founder checklist and progress | `IChecklistRepository` |
-| `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingRepository`, `IUserRepository` |
-| `ArchiveService` | Inactive startups and founders | `IStartupRepository`, `IUserRepository` |
+| `AccountService` | Login, register, logout, forgot password | `IUserReadRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
+| `UserService` | Profile data, photos, contacts, experience, settings | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoReadRepository`, `IUserPhotoWriteRepository`, `IUserContactReadRepository`, `IUserContactWriteRepository` |
+| `StartupService` | Startup list (search, filters, pagination), details, create/edit, the user's own startups for My Startups | `IStartupReadRepository`, `IStartupWriteRepository`, `ICategoryReadRepository` |
+| `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
+| `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsReadRepository`, `ICategoryReadRepository` |
+| `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
+| `AdminService` | Give the mentor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
+| `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryReadRepository` |
+| `ToolkitService` | Toolkit videos, documents, glossary, pathways | `IToolkitReadRepository` |
+| `ChecklistService` | Founder checklist and progress | `IChecklistReadRepository`, `IChecklistWriteRepository` |
+| `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingReadRepository`, `IBookingWriteRepository`, `IUserReadRepository` |
+| `ArchiveService` | Inactive startups and founders | `IStartupReadRepository`, `IUserReadRepository` |
 | `FileStorageService` | Saving/reading files referenced by `address_key` | none (file storage, pending Q-DATA-2) |
 
 ## 4. Not in the structure yet
@@ -226,3 +238,6 @@ Startup.Lab/
 | 0.3 | 2026-10-23 | Followed the new role model (overview Section 7.1). Removed `CrewMember`/`CrewMemberPhoto` entities and their service and repository. Added the `UserExperience` entity, `MentorService`, `AdminService`, `AdminController`, and the mentor booking page (pending). | Aleksandre Nadirashvili |
 | 0.4 | 2026-10-24 | Synced with the updated Excel. Added the `Tag` and `NewsTag` entities. Added `MyStartupsController`, its view and view model (route `/MyStartups`), moved out of Profile. | Aleksandre Nadirashvili |
 | 0.5 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab. Root folder and project file are `Startup.Lab`; C# namespaces start with `StartupLab` (see Conventions). | Aleksandre Nadirashvili |
+| 0.6 | 2026-10-27 | Repositories split into one folder per entity group, each with a read and a write repository (Conventions, folder tree, service table). Added the first group, `Repositories/Users/`. The News group folder is `NewsItems/` to avoid hiding the `News` entity. | Aleksandre Nadirashvili |
+| 0.7 | 2026-10-28 | Added the `Repositories/UserPhotos/` group; photo methods moved out of `Users/`. Dependency injection now lives in `AddApplicationServices` (`Extensions/ServiceCollectionExtensions.cs`), called from `Program.cs`. Status updated to list what is built. Linked the new `coding_style_documentation.md`. | Aleksandre Nadirashvili |
+| 0.8 | 2026-10-28 | Added the `Repositories/UserContacts/` group; contact methods moved out of `Users/`. | Aleksandre Nadirashvili |

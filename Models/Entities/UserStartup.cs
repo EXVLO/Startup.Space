@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// Links a user to a startup they founded. A startup can have several founders.
+/// </summary>
 public class UserStartup
 {
     public int UserId { get; set; }

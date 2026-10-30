@@ -1,5 +1,8 @@
 namespace StartupLab.Models.Entities;
 
+/// <summary>
+/// A video in a news item.
+/// </summary>
 public class NewsVideo
 {
     public int Id { get; set; }
@@ -10,10 +13,19 @@ public class NewsVideo
 
     public string? Description { get; set; }
 
+    /// <summary>
+    /// Key of the stored file. Its format is not decided yet.
+    /// </summary>
     public string AddressKey { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Position in the list. Lower numbers come first.
+    /// </summary>
     public int DisplayOrder { get; set; }
 
+    /// <summary>
+    /// True for the news item's main video.
+    /// </summary>
     public bool IsPrimary { get; set; }
 
     public DateTime DateCreated { get; set; }
