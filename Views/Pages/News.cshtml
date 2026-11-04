@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "News";
+    ViewData["Section"] = "News";
+    var featured = MockData.News[0];
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Updates</span>
+        <h1>News</h1>
+        <p class="text-muted mb-0">What's happening in the Startup.Lab community.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <a class="card-soft p-0 overflow-hidden mb-5" href="#">
+        <div class="row g-0 align-items-center">
+            <div class="col-md-6">
+                <div class="thumb mb-0 h-100" style="border-radius:0;min-height:260px;font-size:3rem;">★</div>
+            </div>
+            <div class="col-md-6 p-4 p-md-5">
+                <span class="tag mb-3">Main news · @featured.Tag</span>
+                <h2 class="mt-2">@featured.Title</h2>
+                <p class="text-muted">@featured.Summary</p>
+                <small class="text-muted">@featured.Date</small>
+            </div>
+        </div>
+    </a>
+
+    <div class="mb-4">
+        <a class="tag-filter active" href="#">All</a>
+        @foreach (var tag in MockData.News.Select(n => n.Tag).Distinct())
+        {
+            <a class="tag-filter" href="#">@tag</a>
+        }
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in MockData.News.Skip(1))
+        {
+            <div class="col-md-6 col-lg-4">
+                <a class="card-soft" href="#">
+                    <div class="thumb thumb-@(item.Id % 4 + 1)"></div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="tag">@item.Tag</span>
+                        <small class="text-muted">@item.Date</small>
+                    </div>
+                    <h5 class="mb-1">@item.Title</h5>
+                    <p class="text-muted mb-0">@item.Summary</p>
+                </a>
+            </div>
+        }
+    </div>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next →</a></li>
+        </ul>
+    </nav>
+</div>

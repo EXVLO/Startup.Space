@@ -1,0 +1,63 @@
+@model int
+@{
+    var person = MockData.Founders.Concat(MockData.Mentors).SingleOrDefault(p => p.Id == Model) ?? MockData.Founders[0];
+    var startups = MockData.Startups.Where(s => s.FounderId == person.Id).ToList();
+    var handle = person.Name.Split(' ')[0].ToLowerInvariant();
+    ViewData["Title"] = person.Name;
+    ViewData["Section"] = "Founders";
+}
+
+<section class="page-header">
+    <div class="container">
+        <a asp-controller="Pages" asp-action="Founders" class="small fw-semibold">← All founders</a>
+        <div class="d-flex flex-wrap align-items-center gap-4 mt-3">
+            <span class="avatar avatar-lg">@person.Initials</span>
+            <div>
+                <h1 class="mb-1">@person.Name</h1>
+                <div class="text-brand fw-semibold mb-2">@person.Role</div>
+                <p class="text-muted mb-0">@person.Bio</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="section-title">
+                <h2>Startups</h2>
+                <a asp-controller="Pages" asp-action="Startups" asp-route-founder="@person.Name" class="fw-semibold">More startups by this founder →</a>
+            </div>
+            @if (startups.Count == 0)
+            {
+                <div class="card-soft text-center text-muted py-5">No startups yet.</div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var startup in startups)
+                    {
+                        <div class="col-md-6"><partial name="_StartupCard" model="startup" /></div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col-lg-4">
+            <div class="card-soft mb-4">
+                <h5 class="mb-2">Contact Info</h5>
+                <ul class="list-soft">
+                    <li><span class="text-muted">Email</span><span>@($"{handle}@harbour.space")</span></li>
+                    <li><span class="text-muted">LinkedIn</span><a href="#">Profile</a></li>
+                    <li><span class="text-muted">Telegram</span><a href="#">@($"@{handle}")</a></li>
+                </ul>
+            </div>
+            <div class="card-soft">
+                <h5 class="mb-2">Experience</h5>
+                <ul class="list-soft">
+                    <li><span>Student, Harbour.Space</span><small class="text-muted">2024–now</small></li>
+                    <li><span>Intern, Product team</span><small class="text-muted">2025</small></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "My Startups";
+    ViewData["Section"] = "Account";
+    var mine = MockData.Startups.Where(s => s.FounderId == 1).ToList();
+}
+
+<section class="page-header">
+    <div class="container d-flex flex-wrap align-items-end gap-3">
+        <div class="flex-grow-1">
+            <span class="eyebrow">My account</span>
+            <h1>My Startups</h1>
+            <p class="text-muted mb-0">Startups you founded or co-founded.</p>
+        </div>
+        <a class="btn btn-primary" href="#">+ New startup</a>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+            <input class="form-control" placeholder="Search my startups…" />
+        </div>
+        <div class="col-lg-4">
+            <select class="form-select">
+                <option>All tags</option>
+                @foreach (var category in mine.Select(s => s.Category).Distinct())
+                {
+                    <option>@category</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var startup in mine)
+        {
+            <div class="col-md-6 col-lg-4"><partial name="_StartupCard" model="startup" /></div>
+        }
+        <div class="col-md-6 col-lg-4">
+            <a class="card-soft d-flex flex-column align-items-center justify-content-center text-center bg-soft" href="#" style="border-style:dashed;min-height:280px;">
+                <span class="step-number fs-4">+</span>
+                <h5 class="mb-1">Add a startup</h5>
+                <small class="text-muted">Tell the community what you're building.</small>
+            </a>
+        </div>
+    </div>
+</div>

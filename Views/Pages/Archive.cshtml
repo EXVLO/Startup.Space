@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Archive";
+    ViewData["Section"] = "AboutUs";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">History</span>
+        <h1>Archive</h1>
+        <p class="text-muted mb-0">Inactive startups and founders from past cohorts.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <ul class="nav nav-pills gap-2 mb-4" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#archived-startups" type="button">Startups</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#archived-founders" type="button">Founders</button></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="archived-startups">
+            <div class="row g-4">
+                @foreach (var startup in MockData.Startups.Skip(3))
+                {
+                    <div class="col-md-6 col-lg-3 archived"><partial name="_StartupCard" model="startup" /></div>
+                }
+            </div>
+        </div>
+        <div class="tab-pane fade" id="archived-founders">
+            <div class="row g-4">
+                @foreach (var founder in MockData.Founders.Skip(3))
+                {
+                    <div class="col-md-6 col-lg-4 archived"><partial name="_PersonCard" model="founder" /></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

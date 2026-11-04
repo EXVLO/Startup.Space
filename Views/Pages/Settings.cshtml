@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Settings";
+    ViewData["Section"] = "Account";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">My account</span>
+        <h1>Settings</h1>
+        <p class="text-muted mb-0">Update your profile, password, and notifications.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="nav flex-column nav-pills gap-1">
+                <a class="nav-link active" href="#profile">Profile</a>
+                <a class="nav-link" href="#security">Password</a>
+                <a class="nav-link" href="#notifications">Notifications</a>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div class="card-soft mb-4" id="profile">
+                <h4 class="mb-3">Profile</h4>
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <span class="avatar avatar-lg" style="width:5rem;height:5rem;font-size:1.6rem;">NB</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-primary">Upload photo</button>
+                        <button class="btn btn-sm btn-outline-primary">Remove</button>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="name">Name</label>
+                        <input class="form-control" id="name" value="Nino" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" for="surname">Surname</label>
+                        <input class="form-control" id="surname" value="Beridze" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" for="description">About me</label>
+                        <textarea class="form-control" id="description" rows="3">Logistics engineer who loves making cities cleaner.</textarea>
+                    </div>
+                </div>
+                <div class="text-end mt-3"><button class="btn btn-primary">Save changes</button></div>
+            </div>
+
+            <div class="card-soft mb-4" id="security">
+                <h4 class="mb-3">Password</h4>
+                <div class="row g-3">
+                    <div class="col-md-4"><input class="form-control" type="password" placeholder="Current password" /></div>
+                    <div class="col-md-4"><input class="form-control" type="password" placeholder="New password" /></div>
+                    <div class="col-md-4"><input class="form-control" type="password" placeholder="Repeat new password" /></div>
+                </div>
+                <div class="text-end mt-3"><button class="btn btn-primary">Update password</button></div>
+            </div>
+
+            <div class="card-soft" id="notifications">
+                <h4 class="mb-3">Notifications</h4>
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="n1" checked />
+                    <label class="form-check-label" for="n1">Email me when a mentor confirms a booking</label>
+                </div>
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="n2" checked />
+                    <label class="form-check-label" for="n2">Weekly Startup.Lab news digest</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="n3" />
+                    <label class="form-check-label" for="n3">Tips from the Founders Toolkit</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

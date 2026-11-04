@@ -1,0 +1,11 @@
+@model MockStartup
+
+<a class="card-soft" asp-controller="Pages" asp-action="StartupDetails" asp-route-startupId="@Model.Id">
+    <div class="thumb thumb-@(Model.Id % 4 + 1)">@Model.Name[0]</div>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="tag">@Model.Category</span>
+        <small class="text-muted">by @Model.Founder.Name</small>
+    </div>
+    <h5 class="mb-1">@Model.Name</h5>
+    <p class="text-muted mb-0">@Model.Tagline</p>
+</a>

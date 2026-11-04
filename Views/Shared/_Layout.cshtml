@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var section = ViewData["Section"] as string;
+    string Active(string name) => section == name ? "active" : "";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,36 +14,96 @@
     <link rel="stylesheet" href="~/Startup.Lab.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Startup.Lab</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+    <header class="sticky-top">
+        <nav class="navbar navbar-expand-lg site-nav py-3">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <span class="brand-mark">S</span>Startup.Lab
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav mx-auto gap-lg-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @Active("Startups")" asp-controller="Pages" asp-action="Startups">Startups</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @Active("Founders")" asp-controller="Pages" asp-action="Founders">Founders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Active("News")" asp-controller="Pages" asp-action="News">News</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @Active("Toolkit")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Toolkit</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="Toolkit">Overview</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="ToolkitPathway">Founder Pathway</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="ToolkitVideos">Video Tutorials</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @Active("Booking")" asp-controller="Pages" asp-action="Booking">Booking</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle @Active("AboutUs")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="AboutUs">About Us</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="Team">Team &amp; Mentors</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="Archive">Archive</a></li>
+                            </ul>
                         </li>
                     </ul>
+                    <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+                        <div class="dropdown">
+                            <a class="btn btn-outline-primary btn-sm dropdown-toggle @Active("Account")" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">My account</a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="Profile">Profile</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="MyStartups">My Startups</a></li>
+                                <li><a class="dropdown-item" asp-controller="Pages" asp-action="Settings">Settings</a></li>
+                            </ul>
+                        </div>
+                        <a class="btn btn-primary btn-sm" asp-controller="Pages" asp-action="Login">Log in</a>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
         <div class="container">
-            &copy; 2026 - Startup.Lab - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row g-4">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center fw-bold text-dark mb-2">
+                        <span class="brand-mark">S</span>Startup.Lab
+                    </div>
+                    <p class="mb-0">A home for student founders: showcase your startup, meet mentors, and learn as you build.</p>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="fw-semibold text-dark mb-2">Explore</div>
+                    <div><a asp-controller="Pages" asp-action="Startups">Startups</a></div>
+                    <div><a asp-controller="Pages" asp-action="Founders">Founders</a></div>
+                    <div><a asp-controller="Pages" asp-action="News">News</a></div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <div class="fw-semibold text-dark mb-2">Learn</div>
+                    <div><a asp-controller="Pages" asp-action="Toolkit">Toolkit</a></div>
+                    <div><a asp-controller="Pages" asp-action="Booking">Book a mentor</a></div>
+                    <div><a asp-controller="Pages" asp-action="Archive">Archive</a></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-semibold text-dark mb-2">Startup.Lab</div>
+                    <div><a asp-controller="Pages" asp-action="AboutUs">About us</a></div>
+                    <div><a asp-controller="Pages" asp-action="Team">Team &amp; Mentors</a></div>
+                    <div><a asp-controller="Home" asp-action="Privacy">Privacy and Policy</a></div>
+                </div>
+            </div>
+            <div class="border-top mt-4 pt-3 small">&copy; 2026 Startup.Lab · Harbour.Space</div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

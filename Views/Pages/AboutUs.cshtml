@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "About Us";
+    ViewData["Section"] = "AboutUs";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">About</span>
+        <h1>About Startup.Lab</h1>
+        <p class="text-muted mb-0">The incubation program of Harbour.Space for student founders.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4 align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="mb-3">Built for founders who are still students</h2>
+            <p class="text-muted">Startup.Lab gives every student a place to show their startup, learn from people who have built companies, and follow a clear path from idea to launch.</p>
+            <p class="text-muted mb-0">Our crew of mentors helps with product, fundraising, marketing, and engineering through one-to-one sessions.</p>
+        </div>
+        <div class="col-lg-6">
+            <div class="row g-3">
+                <div class="col-6"><div class="card-soft text-center"><div class="fs-2 fw-bold text-brand">2024</div><small class="text-muted">Founded</small></div></div>
+                <div class="col-6"><div class="card-soft text-center"><div class="fs-2 fw-bold text-brand">120+</div><small class="text-muted">Mentor sessions</small></div></div>
+                <div class="col-6"><div class="card-soft text-center"><div class="fs-2 fw-bold text-brand">42</div><small class="text-muted">Startups</small></div></div>
+                <div class="col-6"><div class="card-soft text-center"><div class="fs-2 fw-bold text-brand">3</div><small class="text-muted">Demo Days</small></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <h2>The Crew</h2>
+        <a asp-controller="Pages" asp-action="Team" class="fw-semibold">Team &amp; Mentors →</a>
+    </div>
+    <div class="row g-4">
+        @foreach (var mentor in MockData.Mentors.Take(3))
+        {
+            <div class="col-md-4"><partial name="_PersonCard" model="mentor" /></div>
+        }
+    </div>
+</div>

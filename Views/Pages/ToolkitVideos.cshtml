@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Video Tutorials";
+    ViewData["Section"] = "Toolkit";
+    var videos = new[]
+    {
+        ("Validate your idea in a week", "Product", "18 min"),
+        ("Talking to your first 20 users", "Product", "24 min"),
+        ("How to write a pitch deck", "Fundraising", "31 min"),
+        ("Understanding term sheets", "Fundraising", "27 min"),
+        ("Growth on a student budget", "Marketing", "22 min"),
+        ("Company setup and IP basics", "Legal", "19 min")
+    };
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Founders Toolkit</span>
+        <h1>Video Tutorials</h1>
+        <p class="text-muted mb-0">Short courses from Udemy and our mentors.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <partial name="_ToolkitNav" />
+
+    <div class="row g-4">
+        @for (var i = 0; i < videos.Length; i++)
+        {
+            var (title, topic, length) = videos[i];
+            <div class="col-md-6 col-lg-4">
+                <a class="card-soft" href="#">
+                    <div class="thumb thumb-@(i % 4 + 1)">▶</div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="tag">@topic</span>
+                        <small class="text-muted">@length</small>
+                    </div>
+                    <h5 class="mb-0">@title</h5>
+                </a>
+            </div>
+        }
+    </div>
+</div>

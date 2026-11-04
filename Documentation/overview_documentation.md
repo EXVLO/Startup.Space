@@ -804,3 +804,27 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-PRIV-1:** Who writes the Privacy Policy text?
 - **Q-PRIV-2:** Is there any data retention rule (e.g. delete inactive accounts after X)?
 - **Q-PRIV-3:** Can users delete their account and data?
+
+
+### additions
+-- add is_investor
+-- checklist for each startup project
+-- pathway (seperate)
+-- add new page documentation in toolkit (downlodable documentation) (documents should have link not .pdf or any file)
+-- add glossary in seperate page in tookit as well
+-- isntead of header we have sidebar
+
+## later plans
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+-- 
+--  

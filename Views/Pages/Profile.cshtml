@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["Section"] = "Account";
+    var me = MockData.Founders[0];
+}
+
+<section class="page-header">
+    <div class="container d-flex flex-wrap align-items-center gap-4">
+        <span class="avatar avatar-lg">@me.Initials</span>
+        <div class="flex-grow-1">
+            <span class="eyebrow">My profile</span>
+            <h1 class="mb-1">@me.Name</h1>
+            <p class="text-muted mb-0">@me.Bio</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-primary" asp-controller="Pages" asp-action="FounderDetails" asp-route-founderId="@me.Id">View public page</a>
+            <a class="btn btn-primary" asp-controller="Pages" asp-action="Settings">Edit profile</a>
+        </div>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card-soft">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="mb-0">Contacts</h4>
+                    <button class="btn btn-sm btn-outline-primary">+ Add</button>
+                </div>
+                <ul class="list-soft">
+                    <li><span>nino@@harbour.space</span><a href="#" class="small">Edit</a></li>
+                    <li><span>+995 555 12 34 56</span><a href="#" class="small">Edit</a></li>
+                    <li><span>linkedin.com/in/nino</span><a href="#" class="small">Edit</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card-soft">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="mb-0">Experience</h4>
+                    <button class="btn btn-sm btn-outline-primary">+ Add</button>
+                </div>
+                <ul class="list-soft">
+                    <li><div><div class="fw-semibold">Logistics Analyst</div><small class="text-muted">Wolt · 2025</small></div><a href="#" class="small">Edit</a></li>
+                    <li><div><div class="fw-semibold">Computer Science student</div><small class="text-muted">Harbour.Space · 2024–now</small></div><a href="#" class="small">Edit</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="section-title mt-2">
+                <h4 class="mb-0">My startups</h4>
+                <a asp-controller="Pages" asp-action="MyStartups" class="fw-semibold">Manage →</a>
+            </div>
+            <div class="row g-4">
+                @foreach (var startup in MockData.Startups.Where(s => s.FounderId == me.Id))
+                {
+                    <div class="col-md-6 col-lg-4"><partial name="_StartupCard" model="startup" /></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
