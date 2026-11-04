@@ -1,3 +1,5 @@
+using StartupLab.Repositories.Categories;
+using StartupLab.Repositories.Categories.Interfaces;
 using StartupLab.Repositories.UserContacts;
 using StartupLab.Repositories.UserContacts.Interfaces;
 using StartupLab.Repositories.UserPhotos;
@@ -26,6 +28,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserContactReadRepository, UserContactReadRepository>();
         services.AddScoped<IUserContactWriteRepository, UserContactWriteRepository>();
+
+        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+        services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
         return services;
     }

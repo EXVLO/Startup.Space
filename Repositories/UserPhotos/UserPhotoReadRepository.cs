@@ -10,8 +10,8 @@ namespace StartupLab.Repositories.UserPhotos;
 /// </summary>
 public class UserPhotoReadRepository(ApplicationDbContext context) : IUserPhotoReadRepository
 {
-    public Task<UserPhoto?> GetByUserIdAsync(int userId, CancellationToken cancellationToken) =>
-        context.UserPhotos
+    public async Task<UserPhoto?> GetByUserIdAsync(int userId, CancellationToken cancellationToken) =>
+        await context.UserPhotos
             .AsNoTracking()
             .SingleOrDefaultAsync(p => p.UserId == userId, cancellationToken);
 }
