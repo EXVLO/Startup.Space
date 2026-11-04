@@ -10,8 +10,8 @@ namespace StartupLab.Repositories.UserContacts;
 /// </summary>
 public class UserContactReadRepository(ApplicationDbContext context) : IUserContactReadRepository
 {
-    public Task<UserContact?> GetByIdAsync(int userId, int contactId, CancellationToken cancellationToken) =>
-        context.UserContacts
+    public async Task<UserContact?> GetByIdAsync(int userId, int contactId, CancellationToken cancellationToken) =>
+        await context.UserContacts
             .AsNoTracking()
             .SingleOrDefaultAsync(c => c.Id == contactId && c.UserId == userId, cancellationToken);
 
