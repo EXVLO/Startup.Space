@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Team & Mentors";
+    ViewData["Section"] = "AboutUs";
+}
+
+<section class="page-header">
+    <div class="container">
+        <a asp-controller="Pages" asp-action="AboutUs" class="small fw-semibold">← About us</a>
+        <h1 class="mt-2">Team &amp; Mentors</h1>
+        <p class="text-muted mb-0">People who run Startup.Lab and mentor our founders.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        @foreach (var mentor in MockData.Mentors)
+        {
+            <div class="col-md-6 col-lg-3">
+                <a class="card-soft text-center" asp-controller="Pages" asp-action="FounderDetails" asp-route-founderId="@mentor.Id">
+                    <span class="avatar avatar-lg mb-3">@mentor.Initials</span>
+                    <h5 class="mb-1">@mentor.Name</h5>
+                    <div class="text-brand small fw-semibold mb-2">@mentor.Role</div>
+                    <p class="text-muted small mb-3">@mentor.Bio</p>
+                    <span class="btn btn-outline-primary btn-sm">Book a session</span>
+                </a>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "Booking";
+    ViewData["Section"] = "Booking";
+    var statuses = new[] { ("available", "Available until 18:00"), ("busy", "Busy until Nov 2"), ("available", "Available until 16:00"), ("inactive", "Inactive") };
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Mentorship</span>
+        <h1>Book a mentor</h1>
+        <p class="text-muted mb-0">Pick a mentor, choose a time, and get focused advice for your startup.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <h4 class="mb-3">1. Choose a mentor</h4>
+            <div class="d-grid gap-3">
+                @for (var i = 0; i < MockData.Mentors.Count; i++)
+                {
+                    var mentor = MockData.Mentors[i];
+                    var (status, label) = statuses[i];
+                    <div class="card-soft d-flex align-items-center gap-3 @(i == 0 ? "border-primary" : "")">
+                        <span class="avatar">@mentor.Initials</span>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">@mentor.Name</div>
+                            <small class="text-muted">@mentor.Role</small>
+                            <div class="status status-@status mt-1">@label</div>
+                        </div>
+                        @if (status == "available")
+                        {
+                            <button class="btn btn-sm @(i == 0 ? "btn-primary" : "btn-outline-primary")">@(i == 0 ? "Selected" : "Select")</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-outline-primary" disabled>Unavailable</button>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <h4 class="mb-3">2. Pick a time</h4>
+            <div class="card-soft mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button class="btn btn-sm btn-outline-primary">‹</button>
+                    <strong>November 2026</strong>
+                    <button class="btn btn-sm btn-outline-primary">›</button>
+                </div>
+                <div class="calendar">
+                    @foreach (var dayName in new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" })
+                    {
+                        <div class="day-name">@dayName</div>
+                    }
+                    @for (var blank = 0; blank < 6; blank++)
+                    {
+                        <div class="day muted"></div>
+                    }
+                    @for (var day = 1; day <= 30; day++)
+                    {
+                        var css = day == 4 ? "selected" : day % 3 == 1 && day > 1 ? "free" : day < 4 ? "muted" : "";
+                        <div class="day @css">@day</div>
+                    }
+                </div>
+                <hr />
+                <div class="fw-semibold mb-2">Free slots on Wed, Nov 4</div>
+                <span class="slot">10:00</span>
+                <span class="slot selected">11:30</span>
+                <span class="slot">14:00</span>
+                <span class="slot">16:30</span>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-primary">Book 11:30 with Elena</button>
+                </div>
+            </div>
+
+            <div class="card-soft bg-soft">
+                <h5>Session Guidelines</h5>
+                <ul class="text-muted mb-0">
+                    <li>Sessions are 30 minutes, online or on campus.</li>
+                    <li>Send your questions and deck at least a day before.</li>
+                    <li>Cancel at least 12 hours in advance so others can book.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

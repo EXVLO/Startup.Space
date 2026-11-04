@@ -1,0 +1,73 @@
+@model int
+@{
+    var startup = MockData.Startups.SingleOrDefault(s => s.Id == Model) ?? MockData.Startups[0];
+    var domain = startup.Name.Replace(" ", "").ToLowerInvariant() + ".io";
+    ViewData["Title"] = startup.Name;
+    ViewData["Section"] = "Startups";
+}
+
+<section class="page-header">
+    <div class="container">
+        <a asp-controller="Pages" asp-action="Startups" class="small fw-semibold">← All startups</a>
+        <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+            <div class="thumb thumb-@(startup.Id % 4 + 1) mb-0" style="width:4.5rem;aspect-ratio:1;">@startup.Name[0]</div>
+            <div>
+                <h1 class="mb-1">@startup.Name</h1>
+                <p class="text-muted mb-0">@startup.Tagline</p>
+            </div>
+            <div class="ms-md-auto d-flex gap-2">
+                <span class="tag align-self-center">@startup.Category</span>
+                <a class="btn btn-primary" href="#">Visit website ↗</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card-soft mb-4">
+                <h4>Info</h4>
+                <p class="text-muted">@startup.Name started as a class project and is now in the Startup.Lab residency. The team is testing with its first users and preparing for Demo Day.</p>
+                <p class="text-muted mb-0">Stage: <strong class="text-dark">Pilot</strong> · Team size: <strong class="text-dark">3</strong> · Founded: <strong class="text-dark">2026</strong></p>
+            </div>
+            <div class="card-soft mb-4">
+                <h4 class="mb-3">Photos &amp; Videos</h4>
+                <div class="row g-3">
+                    @for (var i = 1; i <= 4; i++)
+                    {
+                        <div class="col-6 col-md-3"><div class="thumb thumb-@i mb-0">@(i == 4 ? "▶" : "")</div></div>
+                    }
+                </div>
+            </div>
+            <div class="card-soft">
+                <h4 class="mb-2">Documents</h4>
+                <ul class="list-soft">
+                    <li><span>📄 Pitch deck.pdf</span><a href="#" class="small fw-semibold">Download</a></li>
+                    <li><span>📄 One-pager.pdf</span><a href="#" class="small fw-semibold">Download</a></li>
+                    <li><span>📊 Market research.xlsx</span><a href="#" class="small fw-semibold">Download</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-soft mb-4">
+                <h5 class="mb-3">Who did it</h5>
+                <a class="d-flex align-items-center gap-3 text-reset" asp-controller="Pages" asp-action="FounderDetails" asp-route-founderId="@startup.Founder.Id">
+                    <span class="avatar">@startup.Founder.Initials</span>
+                    <div>
+                        <div class="fw-semibold">@startup.Founder.Name</div>
+                        <small class="text-muted">Founder</small>
+                    </div>
+                </a>
+            </div>
+            <div class="card-soft">
+                <h5 class="mb-2">Contact Info</h5>
+                <ul class="list-soft">
+                    <li><span class="text-muted">Email</span><span>@($"hello@{domain}")</span></li>
+                    <li><span class="text-muted">Website</span><a href="#">@domain</a></li>
+                    <li><span class="text-muted">LinkedIn</span><a href="#">Company page</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

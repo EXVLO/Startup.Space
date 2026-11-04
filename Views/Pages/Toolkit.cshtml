@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Founders Toolkit";
+    ViewData["Section"] = "Toolkit";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Learn</span>
+        <h1>Founders Toolkit</h1>
+        <p class="text-muted mb-0">Everything you need to go from idea to launch, in one place.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <partial name="_ToolkitNav" />
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <a class="card-soft" asp-controller="Pages" asp-action="ToolkitPathway">
+                <span class="step-number">🧭</span>
+                <h4>Founder Pathways</h4>
+                <p class="text-muted mb-3">A step-by-step path with a personal checklist, from validating your idea to Demo Day.</p>
+                <div class="progress" style="height:8px;">
+                    <div class="progress-bar" style="width:40%;background:var(--brand);"></div>
+                </div>
+                <small class="text-muted">4 of 10 steps done</small>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a class="card-soft" asp-controller="Pages" asp-action="ToolkitVideos">
+                <span class="step-number">▶</span>
+                <h4>Video Tutorials</h4>
+                <p class="text-muted mb-0">Short courses on product, fundraising, marketing, and legal basics.</p>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <div class="card-soft">
+                <h4 class="mb-2">Requirements</h4>
+                <ul class="list-soft">
+                    <li><span>Registered team of 1–4 founders</span><span class="tag">Required</span></li>
+                    <li><span>One-page startup summary</span><span class="tag">Required</span></li>
+                    <li><span>Monthly progress update</span><span class="tag">Required</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-soft">
+                <h4 class="mb-2">Documents</h4>
+                <ul class="list-soft">
+                    <li><span>📄 Pitch deck template</span><a href="#" class="small fw-semibold">Download</a></li>
+                    <li><span>📄 Founder agreement sample</span><a href="#" class="small fw-semibold">Download</a></li>
+                    <li><span>📄 Financial model template</span><a href="#" class="small fw-semibold">Download</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card-soft">
+                <h4 class="mb-3">Glossary</h4>
+                <div class="row g-3">
+                    @foreach (var (term, meaning) in new[]
+                    {
+                        ("MVP", "The simplest version of your product that real users can try."),
+                        ("Runway", "How many months your money lasts at the current spending."),
+                        ("Pre-seed", "The earliest funding round, often from friends or angels."),
+                        ("Traction", "Proof that people want your product: users, revenue, growth.")
+                    })
+                    {
+                        <div class="col-md-6 col-lg-3">
+                            <div class="fw-bold text-brand">@term</div>
+                            <small class="text-muted">@meaning</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

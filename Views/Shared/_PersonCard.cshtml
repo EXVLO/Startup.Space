@@ -1,0 +1,10 @@
+@model MockPerson
+
+<a class="card-soft d-flex gap-3 align-items-start" asp-controller="Pages" asp-action="FounderDetails" asp-route-founderId="@Model.Id">
+    <span class="avatar">@Model.Initials</span>
+    <div>
+        <h5 class="mb-1">@Model.Name</h5>
+        <div class="text-brand small fw-semibold mb-2">@Model.Role</div>
+        <p class="text-muted mb-0 small">@Model.Bio</p>
+    </div>
+</a>

@@ -1,8 +1,106 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="eyebrow">About Startup.Lab</span>
+                <h1 class="mb-3">Where student ideas grow into real startups.</h1>
+                <p class="lead mb-4">Show your startup to the world, find co-founders, book time with experienced mentors, and follow a clear path from idea to launch.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-light btn-lg" asp-controller="Pages" asp-action="Startups">Explore startups</a>
+                    <a class="btn btn-outline-light btn-lg rounded-pill" asp-controller="Pages" asp-action="Register">Join as a founder</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-card">
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">This semester</span>
+                        <span class="tag">Fall 2026</span>
+                    </div>
+                    <div class="row text-center g-3">
+                        <div class="col-4"><div class="fs-3 fw-bold text-brand">42</div><small class="text-muted">Startups</small></div>
+                        <div class="col-4"><div class="fs-3 fw-bold text-brand">96</div><small class="text-muted">Founders</small></div>
+                        <div class="col-4"><div class="fs-3 fw-bold text-brand">18</div><small class="text-muted">Mentors</small></div>
+                    </div>
+                    <hr />
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="avatar">DD</span>
+                        <div>
+                            <div class="fw-semibold">Demo Day · Dec 12</div>
+                            <small class="text-muted">Twelve teams pitch to investors</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="eyebrow">Residency &amp; Journey</span>
+            <h2>From idea to Demo Day in four steps</h2>
+        </div>
+        <div class="row g-4">
+            @{
+                var steps = new[]
+                {
+                    ("Join", "Create your account and set up your founder profile."),
+                    ("Build", "Add your startup and follow the Founder Pathway checklist."),
+                    ("Learn", "Watch tutorials and book sessions with mentors."),
+                    ("Launch", "Pitch at Demo Day and meet investors.")
+                };
+            }
+            @for (var i = 0; i < steps.Length; i++)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-soft">
+                        <span class="step-number">@(i + 1)</span>
+                        <h5>@steps[i].Item1</h5>
+                        <p class="text-muted mb-0">@steps[i].Item2</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section bg-soft">
+    <div class="container">
+        <div class="section-title">
+            <div>
+                <span class="eyebrow">Highlighted</span>
+                <h2>Startups to watch</h2>
+            </div>
+            <a asp-controller="Pages" asp-action="Startups" class="fw-semibold">More about Startups →</a>
+        </div>
+        <div class="row g-4">
+            @foreach (var startup in MockData.Startups.Take(3))
+            {
+                <div class="col-md-4"><partial name="_StartupCard" model="startup" /></div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <div>
+                <span class="eyebrow">Meet the Crew</span>
+                <h2>Mentors who have done it before</h2>
+            </div>
+            <a asp-controller="Pages" asp-action="AboutUs" class="fw-semibold">More about Crew →</a>
+        </div>
+        <div class="row g-4">
+            @foreach (var mentor in MockData.Mentors.Take(3))
+            {
+                <div class="col-md-4"><partial name="_PersonCard" model="mentor" /></div>
+            }
+        </div>
+    </div>
+</section>

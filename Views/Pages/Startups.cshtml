@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Startups";
+    ViewData["Section"] = "Startups";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Explore</span>
+        <h1>Startups</h1>
+        <p class="text-muted mb-0">Discover what student founders are building.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+            <input class="form-control" placeholder="Search startups…" />
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <select class="form-select">
+                <option>All founders</option>
+                @foreach (var founder in MockData.Founders)
+                {
+                    <option>@founder.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <select class="form-select">
+                <option>All tags</option>
+                @foreach (var category in MockData.Startups.Select(s => s.Category).Distinct())
+                {
+                    <option>@category</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var startup in MockData.Startups)
+        {
+            <div class="col-md-6 col-lg-4"><partial name="_StartupCard" model="startup" /></div>
+        }
+    </div>
+
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next →</a></li>
+        </ul>
+    </nav>
+</div>

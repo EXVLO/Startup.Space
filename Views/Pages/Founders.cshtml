@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Founders";
+    ViewData["Section"] = "Founders";
+}
+
+<section class="page-header">
+    <div class="container">
+        <span class="eyebrow">Community</span>
+        <h1>Founders</h1>
+        <p class="text-muted mb-0">The people behind the startups.</p>
+    </div>
+</section>
+
+<div class="container section">
+    <div class="row mb-4">
+        <div class="col-lg-6">
+            <input class="form-control" placeholder="Search founders by name…" />
+        </div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var founder in MockData.Founders)
+        {
+            <div class="col-md-6 col-lg-4"><partial name="_PersonCard" model="founder" /></div>
+        }
+    </div>
+</div>

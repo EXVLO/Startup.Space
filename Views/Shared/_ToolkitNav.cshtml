@@ -1,0 +1,10 @@
+@{
+    var current = ViewContext.RouteData.Values["action"] as string;
+}
+
+<ul class="nav nav-pills gap-2 mb-4">
+    <li class="nav-item"><a class="nav-link @(current == "Toolkit" ? "active" : "")" asp-controller="Pages" asp-action="Toolkit">Overview</a></li>
+    <li class="nav-item"><a class="nav-link @(current == "ToolkitPathway" ? "active" : "")" asp-controller="Pages" asp-action="ToolkitPathway">Founder Pathway</a></li>
+    <li class="nav-item"><a class="nav-link @(current == "ToolkitVideos" ? "active" : "")" asp-controller="Pages" asp-action="ToolkitVideos">Video Tutorials</a></li>
+    <li class="nav-item"><a class="nav-link" asp-controller="Pages" asp-action="ToolkitPathway" asp-fragment="checklist">My Checklist</a></li>
+</ul>
