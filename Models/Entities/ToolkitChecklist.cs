@@ -1,7 +1,7 @@
 namespace StartupLab.Models.Entities;
 
 /// <summary>
-/// One item of the founder checklist in the Founders Toolkit. Progress is stored in <see cref="UserChecklist"/>.
+/// One item of the founder checklist in the Founders Toolkit. Progress is stored in <see cref="ToolkitChecklistProgress"/>.
 /// </summary>
 public class ToolkitChecklist
 {
@@ -22,5 +22,5 @@ public class ToolkitChecklist
     /// </summary>
     public bool IsActive { get; set; } = true;
 
-    public ICollection<UserChecklist> UserChecklists { get; set; } = [];
+    public ICollection<ToolkitChecklistProgress> ToolkitChecklistProgress { get; set; } = [];
 }

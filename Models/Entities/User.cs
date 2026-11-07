@@ -24,6 +24,11 @@ public class User : IdentityUser<int>
     public bool IsMentor { get; set; } = false;
 
     /// <summary>
+    /// True if an admin marked this user as an investor.
+    /// </summary>
+    public bool IsInvestor { get; set; } = false;
+
+    /// <summary>
     /// True if this user can manage other users, for example give the mentor role.
     /// </summary>
     public bool IsAdmin { get; set; } = false;
@@ -44,5 +49,5 @@ public class User : IdentityUser<int>
 
     public ICollection<UserStartup> UserStartups { get; set; } = [];
 
-    public ICollection<UserChecklist> UserChecklists { get; set; } = [];
+    public ICollection<ToolkitChecklistProgress> ToolkitChecklistProgress { get; set; } = [];
 }

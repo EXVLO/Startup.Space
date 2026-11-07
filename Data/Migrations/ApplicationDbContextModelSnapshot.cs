@@ -343,6 +343,61 @@ namespace StartupLab.Data.Migrations
                     b.ToTable("startup_category", (string)null);
                 });
 
+            modelBuilder.Entity("StartupLab.Models.Entities.StartupChecklist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("startup_checklist_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("label");
+
+                    b.HasKey("Id")
+                        .HasName("pk_startup_checklist");
+
+                    b.ToTable("startup_checklist", (string)null);
+                });
+
+            modelBuilder.Entity("StartupLab.Models.Entities.StartupChecklistProgress", b =>
+                {
+                    b.Property<int>("StartupId")
+                        .HasColumnType("integer")
+                        .HasColumnName("startup_id");
+
+                    b.Property<int>("StartupChecklistId")
+                        .HasColumnType("integer")
+                        .HasColumnName("startup_checklist_id");
+
+                    b.Property<DateTime?>("DateCompleted")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_completed");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_completed");
+
+                    b.HasKey("StartupId", "StartupChecklistId")
+                        .HasName("pk_startup_checklist_progress");
+
+                    b.HasIndex("StartupChecklistId")
+                        .HasDatabaseName("ix_startup_checklist_progress_startup_checklist_id");
+
+                    b.ToTable("startup_checklist_progress", (string)null);
+                });
+
             modelBuilder.Entity("StartupLab.Models.Entities.StartupDocument", b =>
                 {
                     b.Property<int>("Id")
@@ -583,6 +638,33 @@ namespace StartupLab.Data.Migrations
                     b.ToTable("toolkit_checklist", (string)null);
                 });
 
+            modelBuilder.Entity("StartupLab.Models.Entities.ToolkitChecklistProgress", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("ToolkitChecklistId")
+                        .HasColumnType("integer")
+                        .HasColumnName("toolkit_checklist_id");
+
+                    b.Property<DateTime>("DateCompleted")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_completed");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_completed");
+
+                    b.HasKey("UserId", "ToolkitChecklistId")
+                        .HasName("pk_toolkit_checklist_progress");
+
+                    b.HasIndex("ToolkitChecklistId")
+                        .HasDatabaseName("ix_toolkit_checklist_progress_toolkit_checklist_id");
+
+                    b.ToTable("toolkit_checklist_progress", (string)null);
+                });
+
             modelBuilder.Entity("StartupLab.Models.Entities.ToolkitDocument", b =>
                 {
                     b.Property<int>("Id")
@@ -591,11 +673,6 @@ namespace StartupLab.Data.Migrations
                         .HasColumnName("toolkit_document_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressKey")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("address_key");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp with time zone")
@@ -613,6 +690,11 @@ namespace StartupLab.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("title");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
                     b.HasKey("Id")
                         .HasName("pk_toolkit_document");
 
@@ -627,11 +709,6 @@ namespace StartupLab.Data.Migrations
                         .HasColumnName("toolkit_glossary_id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressKey")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("address_key");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp with time zone")
@@ -745,6 +822,10 @@ namespace StartupLab.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_admin");
 
+                    b.Property<bool>("IsInvestor")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_investor");
+
                     b.Property<bool>("IsMentor")
                         .HasColumnType("boolean")
                         .HasColumnName("is_mentor");
@@ -816,33 +897,6 @@ namespace StartupLab.Data.Migrations
                         .HasDatabaseName("ix_user_normalized_user_name");
 
                     b.ToTable("user", (string)null);
-                });
-
-            modelBuilder.Entity("StartupLab.Models.Entities.UserChecklist", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("ToolkitChecklistId")
-                        .HasColumnType("integer")
-                        .HasColumnName("toolkit_checklist_id");
-
-                    b.Property<DateTime>("DateCompleted")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("date_completed");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_completed");
-
-                    b.HasKey("UserId", "ToolkitChecklistId")
-                        .HasName("pk_user_checklist");
-
-                    b.HasIndex("ToolkitChecklistId")
-                        .HasDatabaseName("ix_user_checklist_toolkit_checklist_id");
-
-                    b.ToTable("user_checklist", (string)null);
                 });
 
             modelBuilder.Entity("StartupLab.Models.Entities.UserContact", b =>
@@ -1065,6 +1119,27 @@ namespace StartupLab.Data.Migrations
                     b.Navigation("Startup");
                 });
 
+            modelBuilder.Entity("StartupLab.Models.Entities.StartupChecklistProgress", b =>
+                {
+                    b.HasOne("StartupLab.Models.Entities.StartupChecklist", "StartupChecklist")
+                        .WithMany("Progress")
+                        .HasForeignKey("StartupChecklistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_startup_checklist_progress_startup_checklists_startup_check");
+
+                    b.HasOne("StartupLab.Models.Entities.Startup", "Startup")
+                        .WithMany("ChecklistProgress")
+                        .HasForeignKey("StartupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_startup_checklist_progress_startups_startup_id");
+
+                    b.Navigation("Startup");
+
+                    b.Navigation("StartupChecklist");
+                });
+
             modelBuilder.Entity("StartupLab.Models.Entities.StartupDocument", b =>
                 {
                     b.HasOne("StartupLab.Models.Entities.Startup", "Startup")
@@ -1113,21 +1188,21 @@ namespace StartupLab.Data.Migrations
                     b.Navigation("Startup");
                 });
 
-            modelBuilder.Entity("StartupLab.Models.Entities.UserChecklist", b =>
+            modelBuilder.Entity("StartupLab.Models.Entities.ToolkitChecklistProgress", b =>
                 {
                     b.HasOne("StartupLab.Models.Entities.ToolkitChecklist", "ToolkitChecklist")
-                        .WithMany("UserChecklists")
+                        .WithMany("ToolkitChecklistProgress")
                         .HasForeignKey("ToolkitChecklistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_checklist_toolkit_checklist_toolkit_checklist_id");
+                        .HasConstraintName("fk_toolkit_checklist_progress_toolkit_checklists_toolkit_check");
 
                     b.HasOne("StartupLab.Models.Entities.User", "User")
-                        .WithMany("UserChecklists")
+                        .WithMany("ToolkitChecklistProgress")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_checklist_asp_net_users_user_id");
+                        .HasConstraintName("fk_toolkit_checklist_progress_users_user_id");
 
                     b.Navigation("ToolkitChecklist");
 
@@ -1207,6 +1282,8 @@ namespace StartupLab.Data.Migrations
 
             modelBuilder.Entity("StartupLab.Models.Entities.Startup", b =>
                 {
+                    b.Navigation("ChecklistProgress");
+
                     b.Navigation("Documents");
 
                     b.Navigation("Links");
@@ -1220,6 +1297,11 @@ namespace StartupLab.Data.Migrations
                     b.Navigation("Videos");
                 });
 
+            modelBuilder.Entity("StartupLab.Models.Entities.StartupChecklist", b =>
+                {
+                    b.Navigation("Progress");
+                });
+
             modelBuilder.Entity("StartupLab.Models.Entities.Tag", b =>
                 {
                     b.Navigation("NewsTags");
@@ -1227,7 +1309,7 @@ namespace StartupLab.Data.Migrations
 
             modelBuilder.Entity("StartupLab.Models.Entities.ToolkitChecklist", b =>
                 {
-                    b.Navigation("UserChecklists");
+                    b.Navigation("ToolkitChecklistProgress");
                 });
 
             modelBuilder.Entity("StartupLab.Models.Entities.User", b =>
@@ -1238,7 +1320,7 @@ namespace StartupLab.Data.Migrations
 
                     b.Navigation("Photo");
 
-                    b.Navigation("UserChecklists");
+                    b.Navigation("ToolkitChecklistProgress");
 
                     b.Navigation("UserStartups");
                 });

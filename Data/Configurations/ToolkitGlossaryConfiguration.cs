@@ -13,7 +13,6 @@ public class ToolkitGlossaryConfiguration : IEntityTypeConfiguration<ToolkitGlos
         builder.HasKey(g => g.Id);
         builder.Property(g => g.Id).HasColumnName("toolkit_glossary_id");
 
-        builder.Property(g => g.AddressKey).IsRequired();
         builder.Property(g => g.Term).IsRequired();
         builder.Property(g => g.Definition).IsRequired();
     }
