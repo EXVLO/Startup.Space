@@ -49,4 +49,15 @@ public class UserReadRepository(ApplicationDbContext context) : IUserReadReposit
             .ThenBy(u => u.Id)
             .Take(max)
             .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<User>> GetInvestorsAsync(int max, CancellationToken cancellationToken) =>
+        await context.Users
+            .AsNoTracking()
+            .Include(u => u.Photo)
+            .Where(u => u.IsActive && u.IsInvestor)
+            .OrderBy(u => u.Name)
+            .ThenBy(u => u.Surname)
+            .ThenBy(u => u.Id)
+            .Take(max)
+            .ToListAsync(cancellationToken);
 }

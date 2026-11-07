@@ -31,6 +31,15 @@ public class UserWriteRepository(ApplicationDbContext context) : IUserWriteRepos
                 .SetProperty(u => u.ConcurrencyStamp, Guid.NewGuid().ToString()),
                 cancellationToken) > 0;
 
+    public async Task<bool> SetInvestorAsync(int userId, bool isInvestor, CancellationToken cancellationToken) =>
+        await context.Users
+            .Where(u => u.Id == userId)
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(u => u.IsInvestor, isInvestor)
+                .SetProperty(u => u.DateModified, DateTime.UtcNow)
+                .SetProperty(u => u.ConcurrencyStamp, Guid.NewGuid().ToString()),
+                cancellationToken) > 0;
+
     public async Task<UserExperience> AddExperienceAsync(int userId, string? title, string? description, CancellationToken cancellationToken)
     {
         var now = DateTime.UtcNow;
