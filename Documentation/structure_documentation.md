@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.8. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/` and `Repositories/UserContacts/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.9. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -44,11 +44,11 @@ Startup.Lab/
 │   ├── BookingController.cs         # /Booking (users book a mentor); mentor booking page (pending: Q-BOOK-14)
 │   ├── AdminController.cs           # give mentor role to a user (pending: route and other admin pages, Q-ROLE-4)
 │   ├── ArchiveController.cs         # /Archive
-│   └── ToolkitController.cs         # /Toolkit, /Toolkit/Videos, /Toolkit/Pathway
+│   └── ToolkitController.cs         # /Toolkit, /Toolkit/Videos, /Toolkit/Pathway, /Toolkit/Checklist, /Toolkit/Documents, /Toolkit/Glossary
 │
 ├── Models/
 │   ├── Entities/                    # one class per database table (Section 6)
-│   │   ├── User.cs                  # includes IsMentor, IsAdmin (no IsFounder)
+│   │   ├── User.cs                  # includes IsMentor, IsInvestor, IsAdmin (no IsFounder)
 │   │   ├── UserPhoto.cs
 │   │   ├── UserContact.cs
 │   │   ├── UserExperience.cs
@@ -57,6 +57,8 @@ Startup.Lab/
 │   │   ├── StartupVideo.cs
 │   │   ├── StartupDocument.cs
 │   │   ├── StartupLink.cs
+│   │   ├── StartupChecklist.cs      # one shared list for every startup
+│   │   ├── StartupChecklistProgress.cs  # join table (startup progress)
 │   │   ├── Category.cs
 │   │   ├── StartupCategory.cs       # join table
 │   │   ├── Tag.cs
@@ -69,7 +71,7 @@ Startup.Lab/
 │   │   ├── ToolkitDocument.cs
 │   │   ├── ToolkitGlossary.cs
 │   │   ├── ToolkitChecklist.cs
-│   │   ├── UserChecklist.cs         # join table
+│   │   ├── ToolkitChecklistProgress.cs  # join table (user progress)
 │   │   └── Booking.cs               # (pending: Q-BOOK-3, no table in Excel yet)
 │   │
 │   └── ViewModels/                  # data passed to Razor views, grouped by page
@@ -84,7 +86,8 @@ Startup.Lab/
 │       │   ├── StartupListViewModel.cs
 │       │   ├── StartupCardViewModel.cs
 │       │   ├── StartupDetailsViewModel.cs
-│       │   └── StartupFormViewModel.cs      # create/edit from My Startups (pending: Q-PR-2)
+│       │   ├── StartupFormViewModel.cs      # create/edit from My Startups (pending: Q-PR-2)
+│       │   └── StartupChecklistViewModel.cs # startup checklist with this startup's progress (page pending: Q-SU-16)
 │       ├── MyStartups/
 │       │   └── MyStartupsViewModel.cs       # own startup cards, search, tag filter (pending: Q-SU-14)
 │       ├── Founders/
@@ -108,7 +111,9 @@ Startup.Lab/
 │       │   ├── ToolkitViewModel.cs
 │       │   ├── ToolkitVideosViewModel.cs
 │       │   ├── ToolkitPathwayViewModel.cs
-│       │   └── ChecklistViewModel.cs
+│       │   ├── ToolkitDocumentsViewModel.cs
+│       │   ├── ToolkitGlossaryViewModel.cs
+│       │   └── ToolkitChecklistViewModel.cs
 │       ├── Profile/
 │       │   └── ProfileViewModel.cs
 │       ├── Settings/
@@ -127,7 +132,8 @@ Startup.Lab/
 │   │   ├── IAdminService.cs
 │   │   ├── ICategoryService.cs
 │   │   ├── IToolkitService.cs
-│   │   ├── IChecklistService.cs
+│   │   ├── IToolkitChecklistService.cs
+│   │   ├── IStartupChecklistService.cs
 │   │   ├── IBookingService.cs
 │   │   ├── IArchiveService.cs
 │   │   └── IFileStorageService.cs   # (pending: Q-DATA-2, what address_key is)
@@ -140,7 +146,8 @@ Startup.Lab/
 │   ├── AdminService.cs
 │   ├── CategoryService.cs
 │   ├── ToolkitService.cs
-│   ├── ChecklistService.cs
+│   ├── ToolkitChecklistService.cs
+│   ├── StartupChecklistService.cs
 │   ├── BookingService.cs
 │   ├── ArchiveService.cs
 │   └── FileStorageService.cs        # (pending: Q-DATA-2)
@@ -168,7 +175,18 @@ Startup.Lab/
 │   ├── NewsItems/                   # News, NewsPhoto, NewsVideo, NewsTag (not "News/", see Conventions)
 │   ├── Categories/                  # Category, Tag
 │   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
-│   ├── Checklists/                  # ToolkitChecklist, UserChecklist
+│   ├── ToolkitChecklists/           # ToolkitChecklist, ToolkitChecklistProgress (per user; a missing progress row means not done)
+│   │   ├── Interfaces/
+│   │   │   ├── IToolkitChecklistReadRepository.cs
+│   │   │   └── IToolkitChecklistWriteRepository.cs
+│   │   ├── ToolkitChecklistReadRepository.cs
+│   │   └── ToolkitChecklistWriteRepository.cs
+│   ├── StartupChecklists/           # StartupChecklist, StartupChecklistProgress (per startup; a missing progress row means not done)
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupChecklistReadRepository.cs
+│   │   │   └── IStartupChecklistWriteRepository.cs
+│   │   ├── StartupChecklistReadRepository.cs
+│   │   └── StartupChecklistWriteRepository.cs
 │   └── Bookings/                    # (pending: Q-BOOK-3)
 │
 ├── Data/
@@ -183,7 +201,7 @@ Startup.Lab/
 │   └── ServiceCollectionExtensions.cs   # AddApplicationServices: registers all services and repositories for DI
 │
 ├── Views/
-│   ├── Shared/                      # _Layout (Header, Nav Bar, Footer), Error, partials
+│   ├── Shared/                      # _Layout (Sidebar, Footer), Error, partials
 │   ├── Home/                        # Index (Landing), Privacy
 │   ├── Account/                     # Login, Register, ForgotPassword
 │   ├── Startups/                    # Index, Details
@@ -196,7 +214,7 @@ Startup.Lab/
 │   ├── Booking/                     # Index, Mentor (pending: Q-BOOK-14)
 │   ├── Admin/                       # Users (give mentor role) (pending: Q-ROLE-4)
 │   ├── Archive/                     # Index
-│   └── Toolkit/                     # Index, Videos, Pathway, Checklist
+│   └── Toolkit/                     # Index, Videos, Pathway, Checklist, Documents, Glossary
 │
 └── wwwroot/                         # css, js, images, lib
 ```
@@ -211,17 +229,18 @@ Startup.Lab/
 | `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
 | `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsReadRepository`, `ICategoryReadRepository` |
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
-| `AdminService` | Give the mentor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
+| `AdminService` | Give the mentor or investor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
 | `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryReadRepository` |
-| `ToolkitService` | Toolkit videos, documents, glossary, pathways | `IToolkitReadRepository` |
-| `ChecklistService` | Founder checklist and progress | `IChecklistReadRepository`, `IChecklistWriteRepository` |
+| `ToolkitService` | Toolkit videos, documents (links), glossary, pathways | `IToolkitReadRepository` |
+| `ToolkitChecklistService` | Founder checklist in the Toolkit and each user's progress | `IToolkitChecklistReadRepository`, `IToolkitChecklistWriteRepository` |
+| `StartupChecklistService` | Startup checklist and each startup's progress (only the startup's founders can mark it, Q-SU-16) | `IStartupChecklistReadRepository`, `IStartupChecklistWriteRepository`, `IStartupReadRepository` |
 | `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingReadRepository`, `IBookingWriteRepository`, `IUserReadRepository` |
 | `ArchiveService` | Inactive startups and founders | `IStartupReadRepository`, `IUserReadRepository` |
 | `FileStorageService` | Saving/reading files referenced by `address_key` | none (file storage, pending Q-DATA-2) |
 
 ## 4. Not in the structure yet
 
-- **Investors:** optional in the Excel. No files until Q-INV-1 is answered.
+- **Investors:** `User.IsInvestor` exists (with `SetInvestorAsync` / `GetInvestorsAsync` in `Repositories/Users/`). No other investor files until Q-INV-1 is answered.
 - **Admin area:** only "give mentor role" is decided (`AdminController` / `AdminService` above). Other admin pages and the admin route are not defined (Q-ROLE-4).
 - **Mentor booking page:** decided to exist (mentors only), but its content and route are WIP (Q-BOOK-14).
 - **Founder Pathways / Requirements data:** no tables in the Excel yet (Q-TK-1, Q-TK-2). A proposed backend plan for Founder Pathways is in [`pathway_backend_plan.md`](pathway_backend_plan.md).
@@ -241,3 +260,4 @@ Startup.Lab/
 | 0.6 | 2026-10-27 | Repositories split into one folder per entity group, each with a read and a write repository (Conventions, folder tree, service table). Added the first group, `Repositories/Users/`. The News group folder is `NewsItems/` to avoid hiding the `News` entity. | Aleksandre Nadirashvili |
 | 0.7 | 2026-10-28 | Added the `Repositories/UserPhotos/` group; photo methods moved out of `Users/`. Dependency injection now lives in `AddApplicationServices` (`Extensions/ServiceCollectionExtensions.cs`), called from `Program.cs`. Status updated to list what is built. Linked the new `coding_style_documentation.md`. | Aleksandre Nadirashvili |
 | 0.8 | 2026-10-28 | Added the `Repositories/UserContacts/` group; contact methods moved out of `Users/`. | Aleksandre Nadirashvili |
+| 0.9 | 2026-11-05 | Followed overview v0.8. `UserChecklist` renamed to `ToolkitChecklistProgress`. Added `IsInvestor`, the `StartupChecklist` and `StartupChecklistProgress` entities, and the `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups (one per checklist, named after its tables). The planned checklist service and view model are split the same way. Added the Toolkit Checklist, Documents and Glossary pages (planned). `_Layout` uses a sidebar instead of the header. | Aleksandre Nadirashvili |
