@@ -10,13 +10,13 @@ namespace StartupLab.Repositories.Users;
 /// </summary>
 public class UserReadRepository(ApplicationDbContext context) : IUserReadRepository
 {
-    public Task<User?> GetByIdAsync(int userId, CancellationToken cancellationToken) =>
-        context.Users
+    public async Task<User?> GetByIdAsync(int userId, CancellationToken cancellationToken) =>
+        await context.Users
             .AsNoTracking()
             .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
-    public Task<User?> GetProfileAsync(int userId, CancellationToken cancellationToken) =>
-        context.Users
+    public async Task<User?> GetProfileAsync(int userId, CancellationToken cancellationToken) =>
+        await context.Users
             .AsNoTracking()
             .Include(u => u.Photo)
             .Include(u => u.Contacts.OrderBy(c => c.Id))
@@ -36,8 +36,8 @@ public class UserReadRepository(ApplicationDbContext context) : IUserReadReposit
             .Take(take)
             .ToListAsync(cancellationToken);
 
-    public Task<int> CountUsersAsync(bool isActive, CancellationToken cancellationToken) =>
-        context.Users.CountAsync(u => u.IsActive == isActive, cancellationToken);
+    public async Task<int> CountUsersAsync(bool isActive, CancellationToken cancellationToken) =>
+        await context.Users.CountAsync(u => u.IsActive == isActive, cancellationToken);
 
     public async Task<IReadOnlyList<User>> GetMentorsAsync(int max, CancellationToken cancellationToken) =>
         await context.Users
