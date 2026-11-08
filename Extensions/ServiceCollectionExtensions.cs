@@ -1,5 +1,15 @@
 using StartupLab.Repositories.StartupChecklists;
 using StartupLab.Repositories.StartupChecklists.Interfaces;
+using StartupLab.Repositories.StartupDocuments;
+using StartupLab.Repositories.StartupDocuments.Interfaces;
+using StartupLab.Repositories.StartupLinks;
+using StartupLab.Repositories.StartupLinks.Interfaces;
+using StartupLab.Repositories.StartupPhotos;
+using StartupLab.Repositories.StartupPhotos.Interfaces;
+using StartupLab.Repositories.Startups;
+using StartupLab.Repositories.Startups.Interfaces;
+using StartupLab.Repositories.StartupVideos;
+using StartupLab.Repositories.StartupVideos.Interfaces;
 using StartupLab.Repositories.ToolkitChecklists;
 using StartupLab.Repositories.ToolkitChecklists.Interfaces;
 using StartupLab.Repositories.UserContacts;
@@ -30,6 +40,21 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserContactReadRepository, UserContactReadRepository>();
         services.AddScoped<IUserContactWriteRepository, UserContactWriteRepository>();
+
+        services.AddScoped<IStartupReadRepository, StartupReadRepository>();
+        services.AddScoped<IStartupWriteRepository, StartupWriteRepository>();
+
+        services.AddScoped<IStartupPhotoReadRepository, StartupPhotoReadRepository>();
+        services.AddScoped<IStartupPhotoWriteRepository, StartupPhotoWriteRepository>();
+
+        services.AddScoped<IStartupVideoReadRepository, StartupVideoReadRepository>();
+        services.AddScoped<IStartupVideoWriteRepository, StartupVideoWriteRepository>();
+
+        services.AddScoped<IStartupDocumentReadRepository, StartupDocumentReadRepository>();
+        services.AddScoped<IStartupDocumentWriteRepository, StartupDocumentWriteRepository>();
+
+        services.AddScoped<IStartupLinkReadRepository, StartupLinkReadRepository>();
+        services.AddScoped<IStartupLinkWriteRepository, StartupLinkWriteRepository>();
 
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
