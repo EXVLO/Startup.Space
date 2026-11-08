@@ -19,7 +19,7 @@ Because there is no table, this plan **proposes** a minimal design. Every assump
 | A-3 | Reading pathways is **public**. The Toolkit is labelled "public/user required" (Q-ROLE-6). |
 | A-4 | Only **admins** create and edit pathways (Q-TK-9, Q-ROLE-4). That is Phase 2; Phase 1 is read-only. |
 | A-5 | Tables follow the style of the Tables sheet: snake_case names, `int` primary keys, `display_order`, `is_active`, `date_created`, nullable `date_modified` (Q-DATA-7, Q-DATA-8). |
-| A-6 | Per-user progress on pathways is **not** stored. Progress tracking already exists through the Checklist (`User_Checklist`). |
+| A-6 | Per-user progress on pathways is **not** stored. Progress tracking already exists through the Checklist (`toolkit_checklist_progress`). |
 
 ### Where pathways fit in the structure
 
@@ -327,7 +327,7 @@ Answer format: "A-2: …" or "Q-PW-1: …".
 - **A-1 … A-6:** see Section 0.
 - **Q-PW-1:** One pathway or several? If there is only one, drop the list page and let `/Toolkit/Pathway` show the steps directly.
 - **Q-PW-2:** Does a step need more than a title and text, such as links to a Toolkit Video or Document, an estimated duration, or a link to a checklist item?
-- **Q-PW-3:** Should founders be able to mark steps as done (a new `user_pathway_step` table, like `User_Checklist`), or is the Checklist enough (A-6)?
+- **Q-PW-3:** Should founders be able to mark steps as done (a new `user_pathway_step` table, like `toolkit_checklist_progress`), or is the Checklist enough (A-6)?
 - **Q-PW-4:** Is step content plain text, Markdown, or rich HTML? Markdown or HTML must be sanitized before it is shown.
 - **Q-PW-5:** Is "Requirements" (Toolkit section, Q-TK-2) part of the pathway, for example as a type of step, or a separate feature?
 

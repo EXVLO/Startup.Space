@@ -1,5 +1,9 @@
 using StartupLab.Repositories.Categories;
 using StartupLab.Repositories.Categories.Interfaces;
+using StartupLab.Repositories.StartupChecklists;
+using StartupLab.Repositories.StartupChecklists.Interfaces;
+using StartupLab.Repositories.ToolkitChecklists;
+using StartupLab.Repositories.ToolkitChecklists.Interfaces;
 using StartupLab.Repositories.UserContacts;
 using StartupLab.Repositories.UserContacts.Interfaces;
 using StartupLab.Repositories.UserPhotos;
@@ -28,6 +32,12 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserContactReadRepository, UserContactReadRepository>();
         services.AddScoped<IUserContactWriteRepository, UserContactWriteRepository>();
+
+        services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
+        services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
+
+        services.AddScoped<IStartupChecklistReadRepository, StartupChecklistReadRepository>();
+        services.AddScoped<IStartupChecklistWriteRepository, StartupChecklistWriteRepository>();
 
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
         services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();

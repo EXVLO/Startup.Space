@@ -3,7 +3,7 @@ using StartupLab.Models.Entities;
 namespace StartupLab.Repositories.Users.Interfaces;
 
 /// <summary>
-/// Changes user data: profile, mentor role and experiences.
+/// Changes user data: profile, mentor and investor roles, and experiences.
 /// </summary>
 public interface IUserWriteRepository
 {
@@ -16,6 +16,11 @@ public interface IUserWriteRepository
     /// Gives or removes the mentor role. Returns false if the user doesn't exist.
     /// </summary>
     Task<bool> SetMentorAsync(int userId, bool isMentor, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Marks or unmarks the user as an investor. Returns false if the user doesn't exist.
+    /// </summary>
+    Task<bool> SetInvestorAsync(int userId, bool isInvestor, CancellationToken cancellationToken);
 
     /// <summary>
     /// Adds an experience entry to the user and returns it with its new id.

@@ -13,6 +13,6 @@ public class ToolkitDocumentConfiguration : IEntityTypeConfiguration<ToolkitDocu
         builder.HasKey(d => d.Id);
         builder.Property(d => d.Id).HasColumnName("toolkit_document_id");
 
-        builder.Property(d => d.AddressKey).IsRequired();
+        builder.Property(d => d.Url).IsRequired();
     }
 }

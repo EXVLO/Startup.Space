@@ -31,4 +31,9 @@ public interface IUserReadRepository
     /// Gets up to <paramref name="max"/> active mentors with their photo, sorted by name and surname.
     /// </summary>
     Task<IReadOnlyList<User>> GetMentorsAsync(int max, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Gets up to <paramref name="max"/> active investors with their photo, sorted by name and surname.
+    /// </summary>
+    Task<IReadOnlyList<User>> GetInvestorsAsync(int max, CancellationToken cancellationToken);
 }

@@ -31,4 +31,6 @@ public class Startup
     public ICollection<StartupCategory> StartupCategories { get; set; } = [];
 
     public ICollection<UserStartup> UserStartups { get; set; } = [];
+
+    public ICollection<StartupChecklistProgress> ChecklistProgress { get; set; } = [];
 }

@@ -15,7 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<UserStartup> UserStartups => Set<UserStartup>();
 
-    public DbSet<UserChecklist> UserChecklists => Set<UserChecklist>();
+    public DbSet<ToolkitChecklistProgress> ToolkitChecklistProgress => Set<ToolkitChecklistProgress>();
 
     public DbSet<Startup> Startups => Set<Startup>();
 
@@ -28,6 +28,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<StartupLink> StartupLinks => Set<StartupLink>();
 
     public DbSet<StartupCategory> StartupCategories => Set<StartupCategory>();
+
+    public DbSet<StartupChecklist> StartupChecklists => Set<StartupChecklist>();
+
+    public DbSet<StartupChecklistProgress> StartupChecklistProgress => Set<StartupChecklistProgress>();
 
     public DbSet<Category> Categories => Set<Category>();
 

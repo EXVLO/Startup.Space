@@ -1,6 +1,6 @@
 # Project Overview Documentation
 
-> **Status:** Draft v0.7, written from the updated `HSS PRoject 1.xlsx` (2026-10-24) plus team decisions made after the first version.
+> **Status:** Draft v0.8, written from the updated `HSS PRoject 1.xlsx` (2026-10-24) plus team decisions made after the first version.
 > Where a team decision changes the Excel, the text says so and links to [Section 7.1, Role model](#71-role-model-team-decision-v05). Everything else comes from the Excel. Anything unclear, missing, or contradictory is listed in [Section 11, Open Questions](#11-open-questions) and will be answered later, when each feature is built.
 > **Current goal:** set up the layers and folder/file structure only (see `structure_documentation.md`). No business logic yet, and no code has been written from this document.
 
@@ -172,10 +172,15 @@ Base domain: `incubation.harbour.space`
 | 17 | `/Toolkit/Videos` | Toolkit / Video Tutorials |
 | 18 | `/Toolkit/Pathway` | Toolkit / Pathway |
 | 19 | `/MyStartups` | My Startups |
+| 20 | `/Toolkit/Checklist` | Toolkit / Checklist (team decision, v0.8) |
+| 21 | `/Toolkit/Documents` | Toolkit / Documents (team decision, v0.8) |
+| 22 | `/Toolkit/Glossary` | Toolkit / Glossary (team decision, v0.8) |
 
 ### 5.3 Common layout
 
 Every wireframe sheet except Register/Login and Privacy and Policy shows the same frame: **Header** (4 items), **Nav Bar**, page content, **Footer** (4 items). The header, nav bar, and footer items are only drawn as "…" placeholders.
+
+**Team decision (v0.8):** the site uses a **sidebar** instead of the header and nav bar. The footer stays. Register/Login and Privacy and Policy still don't use the common frame. The sidebar links to the main pages, and the Toolkit entry links to its sub-pages (Pathway, Videos, Checklist, Documents, Glossary).
 
 ### 5.4 Page-by-page details (from wireframe sheets)
 
@@ -245,6 +250,7 @@ Sections in order:
 - Note: **"mentor cannot checklist"** (mentors cannot use the checklist). Since a mentor is now also a normal user, this rule needs re-confirming (Q-TK-6).
 - Content sections: **Founder Pathways**, **Requirements**, **Documents**, **Glossary**
 - Pages sheet: Video Tutorials are labelled **"(Udemy)"**
+- **Team decision (v0.8):** Checklist, Documents, and Glossary are separate sub-pages (`/Toolkit/Checklist`, `/Toolkit/Documents`, `/Toolkit/Glossary`), not sections of `/Toolkit`. Documents are **links** (`Toolkit Document.url`), not uploaded files. The toolkit checklist stays the **general** founder checklist, with progress per user. Each startup's progress is a separate checklist (`Startup Checklist`, Section 6.2), not part of the Toolkit.
 
 #### About Us Page (Access: Public)
 - **Info about this website and crews**
@@ -293,6 +299,7 @@ Columns are copied exactly from the 2026-10-24 Excel. That version already inclu
 | 8 | is_mentor | default `false`. **Added v0.5.** Only an admin can change it. |
 | 9 | is_admin | |
 | 10 | is_active | |
+| 11 | is_investor | default `false`. **Added v0.8.** Only an admin can change it, like `is_mentor`. |
 
 > **Removed v0.5:** `is_founder`. Every user is a founder, so the flag is not needed.
 > **Removed 2026-10-24:** `startup_count`. The count comes from `User_Startup`. In the sheet the row numbers skip from 7 to 9 where it used to be.
@@ -383,6 +390,16 @@ One user can have many experience entries. Any user can add them, not only mento
 | 6 | display_order | |
 | 7 | date_created | |
 
+**Startup Checklist** (**added v0.8**; one shared list of items for every startup)
+| # | Column | Notes |
+|---|---|---|
+| 1 | startup_checklist_id | PK |
+| 2 | label | |
+| 3 | display_order | |
+| 4 | is_active | |
+
+Items are not copied onto each startup. Each startup's progress is stored in `Startup_Checklist_Progress` (Section 6.7).
+
 ### 6.3 Toolkit group
 
 **Toolkit Video**
@@ -399,7 +416,7 @@ One user can have many experience entries. Any user can add them, not only mento
 | # | Column | Notes |
 |---|---|---|
 | 1 | toolkit_document_id | PK |
-| 2 | address_key | |
+| 2 | url | link to the document. Was `address_key` before v0.8: toolkit documents are links, not stored files. |
 | 3 | title | nullable |
 | 4 | description | nullable |
 | 5 | display_order | |
@@ -409,12 +426,13 @@ One user can have many experience entries. Any user can add them, not only mento
 | # | Column | Notes |
 |---|---|---|
 | 1 | toolkit_glossary_id | PK |
-| 2 | address_key | |
-| 3 | term | |
-| 4 | definition | |
-| 5 | display_order | |
-| 6 | date_created | |
-| 7 | date_modified | nullable (marked on 2026-10-24) |
+| 2 | term | |
+| 3 | definition | |
+| 4 | display_order | |
+| 5 | date_created | |
+| 6 | date_modified | nullable (marked on 2026-10-24) |
+
+> **Removed v0.8:** `address_key`. A glossary entry is a term and its definition only.
 
 **Toolkit Checklist**
 | # | Column | Notes |
@@ -508,13 +526,23 @@ The Excel had a **Crew Member** table (`member_id`, name, surname, email, dates,
 | 1 | news_id | FK to News |
 | 2 | tag_id | FK to Tag |
 
-**User_Checklist** (many-to-many: User and Toolkit Checklist, with progress)
+**Toolkit_Checklist_Progress** (many-to-many: User and Toolkit Checklist, with progress; called `User_Checklist` before v0.8)
 | # | Column | Notes |
 |---|---|---|
 | 1 | user_id | FK to User |
 | 2 | toolkit_checklist_id | FK to Toolkit Checklist |
 | 3 | is_completed | |
 | 4 | date_completed | |
+
+**Startup_Checklist_Progress** (many-to-many: Startup and Startup Checklist, with progress; **added v0.8**)
+| # | Column | Notes |
+|---|---|---|
+| 1 | startup_id | FK to Startup |
+| 2 | startup_checklist_id | FK to Startup Checklist |
+| 3 | is_completed | |
+| 4 | date_completed | nullable |
+
+In both progress tables the primary key is the two foreign keys together. A missing row means the item is not done, so no rows are added when a user or startup is created.
 
 **User_Startup** (many-to-many: User and Startup)
 | # | Column | Notes |
@@ -529,8 +557,9 @@ User            1 ── * User Photo
 User            1 ── * User Contact
 User            1 ── * User Experience
 User            * ── * Startup            (via User_Startup)
-User            * ── * Toolkit Checklist  (via User_Checklist)
+User            * ── * Toolkit Checklist  (via Toolkit_Checklist_Progress)
 Startup         1 ── * Startup Photo / Startup Video / Startup Document / Startup Link
+Startup         * ── * Startup Checklist  (via Startup_Checklist_Progress)
 Startup         * ── * Category           (via Startup_Category)
 News            1 ── * News Photo / News Video
 News            * ── * Tag                (via News_Tag)
@@ -543,7 +572,7 @@ Toolkit Video, Toolkit Document, and Toolkit Glossary have no foreign keys.
 These are listed as facts. They are **not** design decisions. Each one is linked to a question.
 
 - **Booking / appointments / mentor availability.** The Booking page has a calendar and busy/available states, but no table exists. A booking would link a user to a mentor (both rows in `User`) (Q-BOOK-3).
-- **Investors.** In the Black Sheet as "(Optional)" with "Booking with Investor", but no table (Q-INV-1).
+- **Investors.** In the Black Sheet as "(Optional)" with "Booking with Investor". Since v0.8 an investor is a user with `User.is_investor = true`, but there is still no booking data for investors (Q-INV-1).
 - **Tags for Startups.** News now has `Tag` / `News_Tag` (added 2026-10-24). The Startups List and My Startups pages also say "filter by tags", but startups only link to `Category` (Q-DATA-4, Q-SU-14).
 - **Founder Pathways / Requirements.** Toolkit page sections without tables (Q-TK-2).
 - **Password / authentication data.** The User table has no password or auth fields (Q-AUTH-1).
@@ -562,7 +591,8 @@ This replaces the founder/mentor/crew split from the Excel.
 | Visitor | not logged in | Public pages only |
 | User (= founder) | a row in `User` | Everything a logged-in user can do: profile, own startups, toolkit, booking a mentor, etc. There is no separate founder flag. |
 | Mentor | `User.is_mentor = true` | Everything a user can do, plus access to the separate **mentor booking page** (WIP, Q-BOOK-14). Shown as crew/mentors on About Us and Landing. |
-| Admin | `User.is_admin = true` | Can give the mentor role to **any** account. Other admin abilities: Q-ROLE-4. |
+| Investor | `User.is_investor = true` (**added v0.8**) | Everything a user can do. What else investors can do (be booked, view startups) is still open (Q-INV-1). |
+| Admin | `User.is_admin = true` | Can give the mentor and investor roles to **any** account. Other admin abilities: Q-ROLE-4. |
 
 Flow:
 
@@ -620,8 +650,8 @@ Kept for reference. Section 7.1 replaces the founder, mentor, and crew rows.
 
 1. **.NET version:** the Excel says .NET 9.0, but the project targets `net10.0`.
 2. **Archive:** in the Black Sheet and Routes, but **not** in the Pages sheet.
-3. **Investors / Booking with Investor:** in the Black Sheet only. Not in Pages, Routes, or Tables.
-4. **Toolkit sub-pages:** the Black Sheet has *Checklist / Documents / requirements, Video Tutorials, Glossary*. The Pages sheet has *Video Tutorials, Founder Pathways*. Routes only has `/Toolkit/Videos` and `/Toolkit/Pathway`. The Toolkit wireframe has *Founder Pathways, Video Tutorials, View Your Checklist Page* plus sections *Requirements, Documents, Glossary*.
+3. **Investors / Booking with Investor:** in the Black Sheet only. Not in Pages or Routes. **Partly resolved v0.8:** `User.is_investor` added; investor booking is still open.
+4. **Toolkit sub-pages:** **Resolved v0.8:** the sub-pages are Pathway, Videos, Checklist, Documents, and Glossary (Section 5.2). Before that: the Black Sheet has *Checklist / Documents / requirements, Video Tutorials, Glossary*. The Pages sheet has *Video Tutorials, Founder Pathways*. Routes only has `/Toolkit/Videos` and `/Toolkit/Pathway`. The Toolkit wireframe has *Founder Pathways, Video Tutorials, View Your Checklist Page* plus sections *Requirements, Documents, Glossary*.
 5. **"Update feed" vs "News Feed" vs "News":** possibly the same feature under three names.
 6. **"Founder Profile" vs "Founders Details Page":** possibly the same page.
 7. ~~**"Crew" vs "Mentors" vs "Team & Mentors"**~~ **Resolved v0.5:** all are users with `is_mentor = true`.
@@ -629,7 +659,7 @@ Kept for reference. Section 7.1 replaces the founder, mentor, and crew rows.
 9. **Booking page:** it is listed as "Booking Page / With Crew Members" in Pages, but the Black Sheet also has "Booking with Crew team (Tutorials)" and "Booking with Investor".
 10. ~~**`startup_count` on User**~~ **Resolved 2026-10-24:** the column was removed.
 11. **Startup "Contact Info" section:** there is no startup contact table, only `User Contact`.
-12. **`Toolkit Glossary.address_key`:** the glossary has term/definition, and it's unclear what file it would point to.
+12. ~~**`Toolkit Glossary.address_key`**~~ **Resolved v0.8:** the column was removed.
 13. ~~**Toolkit Glossary and Category `date_modified`**~~ **Resolved 2026-10-24:** both are now marked nullable. `User Experience.date_modified` is the only `date_modified` still not marked nullable.
 14. **News `is_active` removed (2026-10-24):** News now has `is_primary` in that place. Every other main table (User, Startup, Category, Tag) has `is_active`, so news can no longer be hidden or soft-deleted (Q-NEWS-7).
 15. **Register sheet (2026-10-24):** it still shows "Are you a founder" / "Are you a mentor", but the new note "normal user no founder no mentor" and the Tables sheet say there are no role questions.
@@ -655,6 +685,7 @@ Moved to [`structure_documentation.md`](structure_documentation.md).
 | 0.5 | 2026-10-23 | New role model (Section 7.1): one kind of account (User = founder), admin-assigned mentor role. Removed `User.is_founder` and the Crew Member / Crew Member Photo tables. Added `User.is_mentor` and the `User Experience` table. Removed role questions from registration. Added the mentor booking page (WIP). Updated the affected pages, inconsistencies, and open questions. | Aleksandre Nadirashvili |
 | 0.6 | 2026-10-24 | Synced with the updated Excel (2026-10-24). Removed `User.startup_count`. Changed `News.is_active` to `is_primary`. Added the `Tag` and `News_Tag` tables. Marked as nullable: Toolkit Glossary and Category `date_modified`, and User Experience `title`/`description`. Added the My Startups page and the `/MyStartups` route. Noted the deleted "Extra Info - Devs" sheet and the emptied "Black Sheet". Updated inconsistencies and open questions. | Aleksandre Nadirashvili |
 | 0.7 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab (Q-GEN-1). | Aleksandre Nadirashvili |
+| 0.8 | 2026-11-05 | Added `User.is_investor` and the investor role. Renamed `User_Checklist` to `Toolkit_Checklist_Progress`. Added `Startup Checklist` and `Startup_Checklist_Progress`. Toolkit Document `address_key` became `url` (links, not files). Removed Toolkit Glossary `address_key`. Added routes `/Toolkit/Checklist`, `/Toolkit/Documents`, `/Toolkit/Glossary`. The common layout uses a sidebar instead of the header. Updated inconsistencies and open questions. | Aleksandre Nadirashvili |
 
 ---
 
@@ -669,7 +700,7 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-GEN-4:** Are Profile, Settings, and My Startups in scope for the first version? They have no status.
 - **Q-GEN-5:** Is there an MVP / first-release scope, and what's in it? Is anything "optional" besides Investors?
 - **Q-GEN-6:** Are there designs (Figma etc.) beyond the Excel wireframes, or does the Excel define the layout?
-- **Q-GEN-7:** What goes in the Header (4 items), Nav Bar, and Footer (4 items)?
+- **Q-GEN-7:** What goes in the Header (4 items), Nav Bar, and Footer (4 items)? **Partly answered (v0.8):** a sidebar replaces the header and nav bar (Section 5.3). Footer content is still open.
 - **Q-GEN-8:** What text/content goes in "About Startup.Lab", "Residency & Journey", About Us, and Privacy Policy? Will you provide it, or should it be placeholder text?
 - **Q-GEN-9:** What does "Residency & Journey" mean for this program?
 - **Q-GEN-10:** In the 2026-10-24 Excel, the "Extra Info - Devs" sheet is deleted and the "Black Sheet" is empty ("Sheet23"). Was that intended? Does their earlier content (tech stack, layers, requirements, feature map) still apply?
@@ -696,7 +727,7 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-AUTH-8:** Can anyone register, or only students/people with a specific email domain?
 
 ### 11.4 Roles and permissions
-- ~~**Q-ROLE-1:** Please confirm the full list of roles.~~ **Answered (v0.5):** visitor, user (= founder), mentor, admin. Investor is still Q-INV-1.
+- ~~**Q-ROLE-1:** Please confirm the full list of roles.~~ **Answered (v0.5):** visitor, user (= founder), mentor, admin. Investor added in v0.8 (`User.is_investor`); what investors can do is Q-INV-1.
 - ~~**Q-ROLE-2:** How is "mentor" stored?~~ **Answered (v0.5):** `User.is_mentor`.
 - ~~**Q-ROLE-3:** Are crew members/mentors users who log in, or only admin-managed profiles?~~ **Answered (v0.5):** they are users who log in. The `Crew Member` table is removed.
 - **Q-ROLE-4:** What can an admin do besides giving the mentor role (decided in v0.5)? Is an admin panel needed (manage users, startups, news, toolkit, categories), and what is its route? It isn't in the pages list.
@@ -721,6 +752,7 @@ These don't block the folder structure. They will be answered when each feature 
 - ~~**Q-SU-13:** What should happen to `startup_count`?~~ **Answered (2026-10-24):** removed from User. Calculate it from `User_Startup`.
 - **Q-SU-14:** "Filter by tags" on Startups List and My Startups: should it use `Category`, or should startups also link to `Tag` (e.g. a `Startup_Tag` table)?
 - **Q-SU-15:** My Startups page: does the search bar search only the user's own startups? Are inactive (`is_active = false`) startups shown there?
+- **Q-SU-16:** Startup checklist (added v0.8): which page shows it (Startup Details, My Startups, or both), and is progress public? Can any co-founder mark items, or only some?
 
 ### 11.6 Founders
 - ~~**Q-FD-1:** Is the Founders List only users with `is_founder = true`?~~ **Answered (v0.5):** `is_founder` is removed; the list shows users (see Q-FD-7 for mentors).
@@ -767,11 +799,11 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-TK-1:** What is a "Founder Pathway": steps, stages, text content? Who manages it?
 - **Q-TK-2:** What are "Requirements": content pages, checklist items, documents? There is no table for them.
 - **Q-TK-3:** Video Tutorials "(Udemy)": are they embedded Udemy links, uploaded videos, or both? What does `address_key` hold for them?
-- **Q-TK-4:** Are Toolkit Documents downloadable files? Public or login-only?
-- **Q-TK-5:** Glossary: why does it have `address_key`? Is it meant to be removed?
-- **Q-TK-6:** Checklist: it is per user (`User_Checklist`). The Excel says "mentor cannot checklist", but since v0.5 a mentor is also a normal user (founder). Does that rule still apply, and what happens to checklist progress when a user becomes a mentor? Are checklist items the same for everyone?
+- **Q-TK-4:** Are Toolkit Documents downloadable files? Public or login-only? **Partly answered (v0.8):** they are links (`toolkit_document.url`) on their own page, `/Toolkit/Documents`. Public or login-only is still open.
+- ~~**Q-TK-5:** Glossary: why does it have `address_key`? Is it meant to be removed?~~ **Answered (v0.8):** removed.
+- **Q-TK-6:** Checklist: it is per user (`Toolkit_Checklist_Progress`). The Excel says "mentor cannot checklist", but since v0.5 a mentor is also a normal user (founder). Does that rule still apply, and what happens to checklist progress when a user becomes a mentor? Are checklist items the same for everyone?
 - **Q-TK-7:** Can a checklist item be un-completed?
-- **Q-TK-8:** Is there a separate checklist page route ("View Your Checklist Page")? It isn't in Routes.
+- ~~**Q-TK-8:** Is there a separate checklist page route ("View Your Checklist Page")? It isn't in Routes.~~ **Answered (v0.8):** yes, `/Toolkit/Checklist`.
 - **Q-TK-9:** Who manages toolkit content: admins only?
 
 ### 11.11 Crew / Mentors / About Us
@@ -782,7 +814,7 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-CREW-5:** Which mentors appear in "Meet the Crew" on the Landing page: all, or selected ones?
 
 ### 11.12 Investors (Optional)
-- **Q-INV-1:** Are Investors in scope now or later? If in scope: are they users or admin-managed profiles, and what can they do (view startups, be booked)?
+- **Q-INV-1:** Are Investors in scope now or later? If in scope: are they users or admin-managed profiles, and what can they do (view startups, be booked)? **Partly answered (v0.8):** investors are users with `is_investor = true`, set by an admin. What they can do, including booking, is still open.
 
 ### 11.13 Profile and Settings
 - **Q-PR-1:** What is on the Profile page: edit own info/photo/contacts/experience? ("my startups" is a separate page since 2026-10-24.)

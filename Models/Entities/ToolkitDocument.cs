@@ -8,9 +8,9 @@ public class ToolkitDocument
     public int Id { get; set; }
 
     /// <summary>
-    /// Key of the stored file. Its format is not decided yet.
+    /// Link to the document. Toolkit documents are external links, not stored files.
     /// </summary>
-    public string AddressKey { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
 
     public string? Title { get; set; }
 
