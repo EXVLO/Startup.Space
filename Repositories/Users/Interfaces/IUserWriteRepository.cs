@@ -3,7 +3,7 @@ using StartupLab.Models.Entities;
 namespace StartupLab.Repositories.Users.Interfaces;
 
 /// <summary>
-/// Changes user data: profile, mentor and investor roles, and experiences.
+/// Changes and deletes user data: profile, mentor and investor roles, experiences, and the user itself (soft or hard delete).
 /// </summary>
 public interface IUserWriteRepository
 {
@@ -36,4 +36,22 @@ public interface IUserWriteRepository
     /// Deletes an experience entry. Returns false if it doesn't exist or belongs to another user.
     /// </summary>
     Task<bool> DeleteExperienceAsync(int userId, int experienceId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Makes an inactive user active again. Their startups stay as they are. Returns false if the user doesn't exist.
+    /// </summary>
+    Task<bool> ActivateAsync(int userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Makes the user inactive (soft delete). Their data is kept. Their startups that have no active founders left become inactive too.
+    /// Returns false if the user doesn't exist.
+    /// </summary>
+    Task<bool> DeactivateAsync(int userId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Deletes the user for good (hard delete), with their photo, contacts, experiences, checklist progress and founder links.
+    /// Their startups that have no active founders left become inactive.
+    /// </summary>
+    /// <returns>The address key of the removed photo (empty if they had none), or null if the user doesn't exist.</returns>
+    Task<IReadOnlyList<string>?> DeleteAsync(int userId, CancellationToken cancellationToken);
 }

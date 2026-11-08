@@ -12,7 +12,7 @@ public class StartupChecklistWriteRepository(ApplicationDbContext context) : ISt
 {
     public async Task<bool> SetProgressAsync(int startupId, int startupChecklistId, bool isCompleted, CancellationToken cancellationToken)
     {
-        if (!await context.Startups.AnyAsync(s => s.Id == startupId, cancellationToken)
+        if (!await context.Startups.AnyAsync(st => st.Id == startupId, cancellationToken)
             || !await context.StartupChecklists.AnyAsync(c => c.Id == startupChecklistId, cancellationToken))
         {
             return false;

@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.9. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/ToolkitChecklists/`, `Repositories/StartupChecklists/` and `Repositories/Categories/` groups (Category only; Tag is still planned), and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.10. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/ToolkitChecklists/`, `Repositories/StartupChecklists/` and `Repositories/Categories/` groups (Category only; Tag is still planned), and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -15,7 +15,7 @@ The layer order follows Section 3.1 of the overview: **Controller -> Service -> 
 - **Interfaces in an `Interfaces/` subfolder** inside `Services/` and inside `Repositories/`. Each implementation has its own interface (`IBookingService` / `BookingService`).
 - **Controllers depend only on service interfaces.** Services depend only on repository interfaces. Repositories are the only layer that uses the `DbContext`.
 - **Entities (database tables) and ViewModels (page data) are separate.** Views never receive entities directly.
-- **One folder per main entity group in `Repositories/`** (for example `Startups/` also handles Startup Photo/Video/Document/Link). This avoids one repository per small table.
+- **One folder per entity group in `Repositories/`.** Join tables stay with their main entity (`Startups/` also handles `UserStartup` and `StartupCategory`). Child tables that a user adds, changes and deletes on their own, such as photos, contacts and links, get their own group (`UserPhotos/`, `StartupLinks/`), so each repository stays small.
 - **Each group has a read repository and a write repository** (`UserReadRepository` / `UserWriteRepository`), each with its own interface in the group's `Interfaces/` subfolder. Read repositories only run no-tracking queries. A service depends only on the side it needs, so read-only services never see write methods.
 - **A group folder must not have the same name as an entity.** A folder named `News` creates the namespace `StartupLab.Repositories.News`, which hides the `News` entity (error CS0118, same as `Startup` above). The News group therefore uses `NewsItems/`.
 - **Dependency injection:** every interface/implementation pair is registered in `AddApplicationServices` in `Extensions/ServiceCollectionExtensions.cs`, and `Program.cs` calls it after registering the database. Everything is registered as scoped, because repositories use the scoped `DbContext`.
@@ -153,7 +153,7 @@ Startup.Lab/
 │   └── FileStorageService.cs        # (pending: Q-DATA-2)
 │
 ├── Repositories/                    # one folder per entity group; every group has the same four files as Users/
-│   ├── Users/                       # User, UserExperience (mentors are users with IsMentor)
+│   ├── Users/                       # User, UserExperience (mentors are users with IsMentor); soft (DeactivateAsync) and hard (DeleteAsync) delete; both deactivate startups left with no active founders
 │   │   ├── Interfaces/
 │   │   │   ├── IUserReadRepository.cs
 │   │   │   └── IUserWriteRepository.cs
@@ -171,7 +171,37 @@ Startup.Lab/
 │   │   │   └── IUserContactWriteRepository.cs
 │   │   ├── UserContactReadRepository.cs
 │   │   └── UserContactWriteRepository.cs
-│   ├── Startups/                    # Startup, Photo, Video, Document, Link, UserStartup, StartupCategory
+│   ├── Startups/                    # Startup, UserStartup (founders), StartupCategory; list search and filters, IsFounderAsync for permission checks, soft and hard delete
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupReadRepository.cs
+│   │   │   └── IStartupWriteRepository.cs
+│   │   ├── StartupFounderRemoval.cs # shared by Startups/ and Users/: a startup left with no active founders becomes inactive (overview §7.4)
+│   │   ├── StartupReadRepository.cs
+│   │   └── StartupWriteRepository.cs
+│   ├── StartupPhotos/               # StartupPhoto (many per startup, at most one primary; delete returns the address_key)
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupPhotoReadRepository.cs
+│   │   │   └── IStartupPhotoWriteRepository.cs
+│   │   ├── StartupPhotoReadRepository.cs
+│   │   └── StartupPhotoWriteRepository.cs
+│   ├── StartupVideos/               # StartupVideo (delete returns the address_key)
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupVideoReadRepository.cs
+│   │   │   └── IStartupVideoWriteRepository.cs
+│   │   ├── StartupVideoReadRepository.cs
+│   │   └── StartupVideoWriteRepository.cs
+│   ├── StartupDocuments/            # StartupDocument (delete returns the address_key)
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupDocumentReadRepository.cs
+│   │   │   └── IStartupDocumentWriteRepository.cs
+│   │   ├── StartupDocumentReadRepository.cs
+│   │   └── StartupDocumentWriteRepository.cs
+│   ├── StartupLinks/                # StartupLink (URLs, no stored file)
+│   │   ├── Interfaces/
+│   │   │   ├── IStartupLinkReadRepository.cs
+│   │   │   └── IStartupLinkWriteRepository.cs
+│   │   ├── StartupLinkReadRepository.cs
+│   │   └── StartupLinkWriteRepository.cs
 │   ├── NewsItems/                   # News, NewsPhoto, NewsVideo, NewsTag (not "News/", see Conventions)
 │   ├── Categories/                  # Category, Tag
 │   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
@@ -225,7 +255,7 @@ Startup.Lab/
 |---|---|---|
 | `AccountService` | Login, register, logout, forgot password | `IUserReadRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
 | `UserService` | Profile data, photos, contacts, experience, settings | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoReadRepository`, `IUserPhotoWriteRepository`, `IUserContactReadRepository`, `IUserContactWriteRepository` |
-| `StartupService` | Startup list (search, filters, pagination), details, create/edit, the user's own startups for My Startups | `IStartupReadRepository`, `IStartupWriteRepository`, `ICategoryReadRepository` |
+| `StartupService` | Startup list (search, filters, pagination), details, create/edit, founders and categories, photos/videos/documents/links, the user's own startups for My Startups. Only the startup's founders (`IsFounderAsync`) and admins may change or delete it (overview §7.4) | `IStartupReadRepository`, `IStartupWriteRepository`, `IStartupPhotoReadRepository`, `IStartupPhotoWriteRepository`, `IStartupVideoReadRepository`, `IStartupVideoWriteRepository`, `IStartupDocumentReadRepository`, `IStartupDocumentWriteRepository`, `IStartupLinkReadRepository`, `IStartupLinkWriteRepository`, `ICategoryReadRepository` |
 | `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
 | `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsReadRepository`, `ICategoryReadRepository` |
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
@@ -241,7 +271,8 @@ Startup.Lab/
 ## 4. Not in the structure yet
 
 - **Investors:** `User.IsInvestor` exists (with `SetInvestorAsync` / `GetInvestorsAsync` in `Repositories/Users/`). No other investor files until Q-INV-1 is answered.
-- **Admin area:** only "give mentor role" is decided (`AdminController` / `AdminService` above). Other admin pages and the admin route are not defined (Q-ROLE-4).
+- **Highlighted startups:** skipped for now. Later a `HighlightedStartup` entity (table `highlighted_startup`, a list of startup ids) and its repository group will be added for the Landing page (overview §6.9, Q-SU-9).
+- **Admin area:** only "give mentor role" and "edit or delete any startup" are decided (`AdminController` / `AdminService` above). Other admin pages and the admin route are not defined (Q-ROLE-4).
 - **Mentor booking page:** decided to exist (mentors only), but its content and route are WIP (Q-BOOK-14).
 - **Founder Pathways / Requirements data:** no tables in the Excel yet (Q-TK-1, Q-TK-2). A proposed backend plan for Founder Pathways is in [`pathway_backend_plan.md`](pathway_backend_plan.md).
 - **Test project:** a separate `Startup.Lab.Tests` project, once Q-TECH-7 is answered.
@@ -261,3 +292,4 @@ Startup.Lab/
 | 0.7 | 2026-10-28 | Added the `Repositories/UserPhotos/` group; photo methods moved out of `Users/`. Dependency injection now lives in `AddApplicationServices` (`Extensions/ServiceCollectionExtensions.cs`), called from `Program.cs`. Status updated to list what is built. Linked the new `coding_style_documentation.md`. | Aleksandre Nadirashvili |
 | 0.8 | 2026-10-28 | Added the `Repositories/UserContacts/` group; contact methods moved out of `Users/`. | Aleksandre Nadirashvili |
 | 0.9 | 2026-11-05 | Followed overview v0.8. `UserChecklist` renamed to `ToolkitChecklistProgress`. Added `IsInvestor`, the `StartupChecklist` and `StartupChecklistProgress` entities, and the `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups (one per checklist, named after its tables). The planned checklist service and view model are split the same way. Added the Toolkit Checklist, Documents and Glossary pages (planned). `_Layout` uses a sidebar instead of the header. | Aleksandre Nadirashvili |
+| 0.10 | 2026-11-08 | Added the `Repositories/Startups/` group (startups, founders, categories) and separate `StartupPhotos/`, `StartupVideos/`, `StartupDocuments/` and `StartupLinks/` groups, following `UserPhotos/` and `UserContacts/`. Conventions explain when a child table gets its own group. `StartupService` lists the new repositories. Followed overview v0.9: users and startups have both soft delete (`DeactivateAsync` / `ActivateAsync`) and hard delete (`DeleteAsync`); which one the services use is Q-DATA-9. Checklist items are only soft deleted, tables without `is_active` only hard deleted. Removing a founder or deleting a user makes startups left with no active founders inactive (`StartupFounderRemoval`). Highlighted startups are planned for later. | Aleksandre Nadirashvili |

@@ -1,6 +1,6 @@
 # Project Overview Documentation
 
-> **Status:** Draft v0.8, written from the updated `HSS PRoject 1.xlsx` (2026-10-24) plus team decisions made after the first version.
+> **Status:** Draft v0.9, written from the updated `HSS PRoject 1.xlsx` (2026-10-24) plus team decisions made after the first version.
 > Where a team decision changes the Excel, the text says so and links to [Section 7.1, Role model](#71-role-model-team-decision-v05). Everything else comes from the Excel. Anything unclear, missing, or contradictory is listed in [Section 11, Open Questions](#11-open-questions) and will be answered later, when each feature is built.
 > **Current goal:** set up the layers and folder/file structure only (see `structure_documentation.md`). No business logic yet, and no code has been written from this document.
 
@@ -196,7 +196,7 @@ Access labels are copied exactly as written in cell A1/A2 of each sheet.
 Sections in order:
 1. **About Startup.Lab**
 2. **Residency & Journey**
-3. **Highlighted startups**, with a link "More about Startups" to the Startups List Page
+3. **Highlighted startups**, with a link "More about Startups" to the Startups List Page. Skipped for now; a `Highlighted Startup` table will be added later (Section 6.9, Q-SU-9).
 4. **Meet the Crew**, with a link "More about Crew" to the About Us Page
 
 #### Startups List Page (Access: Public)
@@ -574,6 +574,7 @@ These are listed as facts. They are **not** design decisions. Each one is linked
 - **Booking / appointments / mentor availability.** The Booking page has a calendar and busy/available states, but no table exists. A booking would link a user to a mentor (both rows in `User`) (Q-BOOK-3).
 - **Investors.** In the Black Sheet as "(Optional)" with "Booking with Investor". Since v0.8 an investor is a user with `User.is_investor = true`, but there is still no booking data for investors (Q-INV-1).
 - **Tags for Startups.** News now has `Tag` / `News_Tag` (added 2026-10-24). The Startups List and My Startups pages also say "filter by tags", but startups only link to `Category` (Q-DATA-4, Q-SU-14).
+- **Highlighted startups (planned, v0.9).** The Landing page shows highlighted startups, but no column marks them. Later we add a `Highlighted Startup` table that lists the ids of the startups to highlight (FK to Startup). Skipped for now (Q-SU-9).
 - **Founder Pathways / Requirements.** Toolkit page sections without tables (Q-TK-2).
 - **Password / authentication data.** The User table has no password or auth fields (Q-AUTH-1).
 - ~~**Mentor flag.**~~ **Resolved v0.5:** `User.is_mentor` added.
@@ -592,7 +593,7 @@ This replaces the founder/mentor/crew split from the Excel.
 | User (= founder) | a row in `User` | Everything a logged-in user can do: profile, own startups, toolkit, booking a mentor, etc. There is no separate founder flag. |
 | Mentor | `User.is_mentor = true` | Everything a user can do, plus access to the separate **mentor booking page** (WIP, Q-BOOK-14). Shown as crew/mentors on About Us and Landing. |
 | Investor | `User.is_investor = true` (**added v0.8**) | Everything a user can do. What else investors can do (be booked, view startups) is still open (Q-INV-1). |
-| Admin | `User.is_admin = true` | Can give the mentor and investor roles to **any** account. Other admin abilities: Q-ROLE-4. |
+| Admin | `User.is_admin = true` | Can give the mentor and investor roles to **any** account, and edit or delete **any** startup (Section 7.4). Other admin abilities: Q-ROLE-4. |
 
 Flow:
 
@@ -644,6 +645,21 @@ Kept for reference. Section 7.1 replaces the founder, mentor, and crew rows.
 | Profile | *(not specified)* |
 | Settings | *(not specified)* |
 
+### 7.4 Startup ownership and deletion (team decision, v0.9)
+
+- **Who can change a startup:** any of its active founders (users linked through `User_Startup`) and any admin. They can edit it and delete it. Nobody else can.
+- **Two kinds of delete:**
+  - **Soft delete** sets `is_active = false` and keeps the row and its data. Only tables with `is_active` have it.
+  - **Hard delete** removes the row for good, together with everything that belongs to it.
+- **Which table has which:**
+  - **User and Startup: both.** Soft delete can be undone (activate again); hard delete can't. Which one the website uses is decided later in the services (Q-DATA-9).
+  - **Other tables with `is_active`** (Category, Tag, Toolkit Checklist, Startup Checklist): soft delete only.
+  - **Tables without `is_active`** (photos, videos, documents, links, User Contact, User Experience, and join rows such as `User_Startup` and `Startup_Category`): hard delete only.
+- A soft-deleted startup moves to the Archive. A soft-deleted user (founder) stays in the database with `is_active = false`.
+- **A startup with no active founders becomes inactive.** Whenever a founder goes, either removed from one startup or because their user is deleted (soft or hard), every startup they founded is checked. A startup with no active founders left gets `is_active = false` and moves to the Archive. A startup that still has other active founders only loses that founder and stays as it was.
+- Inactive founders are not shown on the startup's page and can't change it. An inactive user can't be added as a founder.
+- Nothing becomes active again on its own. Reactivating a user does not reactivate their startups; a founder or an admin has to do that.
+
 ---
 
 ## 8. Inconsistencies Found Between Sheets
@@ -686,6 +702,7 @@ Moved to [`structure_documentation.md`](structure_documentation.md).
 | 0.6 | 2026-10-24 | Synced with the updated Excel (2026-10-24). Removed `User.startup_count`. Changed `News.is_active` to `is_primary`. Added the `Tag` and `News_Tag` tables. Marked as nullable: Toolkit Glossary and Category `date_modified`, and User Experience `title`/`description`. Added the My Startups page and the `/MyStartups` route. Noted the deleted "Extra Info - Devs" sheet and the emptied "Black Sheet". Updated inconsistencies and open questions. | Aleksandre Nadirashvili |
 | 0.7 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab (Q-GEN-1). | Aleksandre Nadirashvili |
 | 0.8 | 2026-11-05 | Added `User.is_investor` and the investor role. Renamed `User_Checklist` to `Toolkit_Checklist_Progress`. Added `Startup Checklist` and `Startup_Checklist_Progress`. Toolkit Document `address_key` became `url` (links, not files). Removed Toolkit Glossary `address_key`. Added routes `/Toolkit/Checklist`, `/Toolkit/Documents`, `/Toolkit/Glossary`. The common layout uses a sidebar instead of the header. Updated inconsistencies and open questions. | Aleksandre Nadirashvili |
+| 0.9 | 2026-11-08 | Added Section 7.4: any founder or an admin can edit and delete a startup. Users and startups can be soft or hard deleted (which one the website uses is Q-DATA-9). Other tables with `is_active` are only soft deleted, the rest only hard deleted. A startup left with no active founders becomes inactive. Highlighted startups are skipped for now; a `Highlighted Startup` table is planned (Section 6.9). Answered Q-SU-4 and Q-DATA-5; partly answered Q-ROLE-4, Q-SU-9 and Q-AR-1; added Q-DATA-9. | Aleksandre Nadirashvili |
 
 ---
 
@@ -730,7 +747,7 @@ These don't block the folder structure. They will be answered when each feature 
 - ~~**Q-ROLE-1:** Please confirm the full list of roles.~~ **Answered (v0.5):** visitor, user (= founder), mentor, admin. Investor added in v0.8 (`User.is_investor`); what investors can do is Q-INV-1.
 - ~~**Q-ROLE-2:** How is "mentor" stored?~~ **Answered (v0.5):** `User.is_mentor`.
 - ~~**Q-ROLE-3:** Are crew members/mentors users who log in, or only admin-managed profiles?~~ **Answered (v0.5):** they are users who log in. The `Crew Member` table is removed.
-- **Q-ROLE-4:** What can an admin do besides giving the mentor role (decided in v0.5)? Is an admin panel needed (manage users, startups, news, toolkit, categories), and what is its route? It isn't in the pages list.
+- **Q-ROLE-4:** What can an admin do besides giving the mentor role (decided in v0.5)? Is an admin panel needed (manage users, startups, news, toolkit, categories), and what is its route? It isn't in the pages list. **Partly answered (v0.9):** admins can edit and delete any startup (Section 7.4). The rest is still open.
 - ~~**Q-ROLE-5:** What can a logged-in non-founder, non-mentor user do?~~ **Obsolete (v0.5):** every user is a founder.
 - **Q-ROLE-6:** "public/user required" on the Toolkit: which parts are public and which need login?
 - **Q-ROLE-7:** Can an admin remove the mentor role again? If so, what happens to that mentor's existing bookings?
@@ -740,12 +757,12 @@ These don't block the folder structure. They will be answered when each feature 
 - ~~**Q-SU-1:** Who can create a startup? Only users with `is_founder`?~~ **Answered (v0.5):** any user (there is no `is_founder` any more).
 - **Q-SU-2:** Can a startup have multiple founders (`User_Startup` suggests yes)? How are co-founders added: invitation, search, approval?
 - **Q-SU-3:** Does an admin need to approve a startup before it is public?
-- **Q-SU-4:** Who can edit or delete a startup: any co-founder, only the creator, an admin?
+- ~~**Q-SU-4:** Who can edit or delete a startup: any co-founder, only the creator, an admin?~~ **Answered (v0.9):** any of its founders and any admin (Section 7.4).
 - **Q-SU-5:** What fields go in the "Info" section beyond name and description (stage, year, industry, team size, etc.)?
 - **Q-SU-6:** Where does the startup's "Contact Info" come from: the founders' User Contact, or a separate startup contact?
 - **Q-SU-7:** "Website Link whatever it is": is that a single main link or multiple links (the `Startup Link` table allows many)?
 - **Q-SU-8:** What are the allowed file types and size limits for photos, videos, and documents? Are videos uploaded files or links (YouTube, etc.)?
-- **Q-SU-9:** What makes a startup "Highlighted" on the Landing page? There is no field for it.
+- **Q-SU-9:** What makes a startup "Highlighted" on the Landing page? There is no field for it. **Partly answered (v0.9):** skipped for now. Later a `Highlighted Startup` table will list the startup ids to highlight (Section 6.9). Who manages that list is still open.
 - **Q-SU-10:** What does "Filter by founders" look like: a dropdown, multi-select, or search?
 - **Q-SU-11:** What does the search bar search: name, description, founder, categories?
 - **Q-SU-12:** How many startups per page? Should the list be paginated?
@@ -765,7 +782,7 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-FD-8:** Are `User Experience` entries shown on the Founder Details page for every user, or only for mentors? In what order (there is no `display_order`)?
 
 ### 11.7 Archive
-- **Q-AR-1:** What puts a startup/founder in the Archive: `is_active = false`? Graduated? Manual action by an admin?
+- **Q-AR-1:** What puts a startup/founder in the Archive: `is_active = false`? Graduated? Manual action by an admin? **Partly answered (v0.9):** a startup goes to the Archive when it has `is_active = false`. That happens when a founder or an admin soft deletes it, or automatically when it has no active founders left (Section 7.4). Founders are still open.
 - **Q-AR-2:** What does the Archive page look like? The sheet is empty. Is it the same as the lists, with tabs for Startups and Founders?
 - **Q-AR-3:** Are archived startups/founders still visible on their detail pages?
 
@@ -827,10 +844,11 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-DATA-2:** What exactly is `address_key`: a file path, a cloud storage key (S3/Azure Blob), or a URL? Where will files be stored?
 - **Q-DATA-3:** Should `email` be unique on User? (The Crew Member table was removed in v0.5.)
 - **Q-DATA-4:** "Tags" vs "Category". **Partly answered (2026-10-24):** they are separate tables. `Tag` is for News and `Category` is for Startups. Startup tags are still open (Q-SU-14).
-- **Q-DATA-5:** Should deletes be soft (via `is_active`) or hard? Tables like Startup Photo have no `is_active`.
+- ~~**Q-DATA-5:** Should deletes be soft (via `is_active`) or hard? Tables like Startup Photo have no `is_active`.~~ **Answered (v0.9):** users and startups support both. Other tables with `is_active` are only soft deleted, and tables without it are only hard deleted (Section 7.4).
 - **Q-DATA-6:** **Mostly answered (2026-10-24):** Toolkit Glossary and Category `date_modified` are nullable, and User Experience `title`/`description` are nullable. Still open: should `User Experience.date_modified` be nullable like everywhere else?
 - **Q-DATA-7:** Primary key type: int auto-increment or GUID?
 - **Q-DATA-8:** Do you want the database naming in snake_case, as in the sheet (`user_id`), in PostgreSQL?
+- **Q-DATA-9:** (added v0.9) When a user or a startup is deleted on the website, is it a soft delete (can be restored) or a hard delete (gone for good)? Both exist in the repositories (Section 7.4). Can admins choose, for example soft for founders and hard for admins?
 
 ### 11.15 Privacy and data
 - **Q-PRIV-1:** Who writes the Privacy Policy text?
