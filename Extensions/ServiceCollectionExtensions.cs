@@ -1,3 +1,5 @@
+using StartupLab.Repositories.Categories;
+using StartupLab.Repositories.Categories.Interfaces;
 using StartupLab.Repositories.StartupChecklists;
 using StartupLab.Repositories.StartupChecklists.Interfaces;
 using StartupLab.Repositories.ToolkitChecklists;
@@ -36,6 +38,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IStartupChecklistReadRepository, StartupChecklistReadRepository>();
         services.AddScoped<IStartupChecklistWriteRepository, StartupChecklistWriteRepository>();
+
+        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+        services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
         return services;
     }

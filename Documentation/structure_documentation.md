@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.9. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.9. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/ToolkitChecklists/`, `Repositories/StartupChecklists/` and `Repositories/Categories/` groups (Category only; Tag is still planned), and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
