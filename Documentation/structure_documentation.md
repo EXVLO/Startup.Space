@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.13. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/NewsItems/`, `Repositories/NewsPhotos/`, `Repositories/NewsVideos/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.14. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/NewsItems/`, `Repositories/NewsPhotos/`, `Repositories/NewsVideos/`, `Repositories/Categories/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -220,7 +220,13 @@ Startup.Lab/
 │   │   │   └── INewsVideoWriteRepository.cs
 │   │   ├── NewsVideoReadRepository.cs
 │   │   └── NewsVideoWriteRepository.cs
-│   ├── Categories/                  # Category, Tag
+│   ├── Categories/                  # Category (not "Category/", see Conventions); soft delete only. Startup links stay in Startups/
+│   │   ├── Interfaces/
+│   │   │   ├── ICategoryReadRepository.cs
+│   │   │   └── ICategoryWriteRepository.cs
+│   │   ├── CategoryReadRepository.cs
+│   │   └── CategoryWriteRepository.cs
+│   ├── Tags/                        # Tag (pending)
 │   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
 │   ├── ToolkitChecklists/           # ToolkitChecklist, ToolkitChecklistProgress (per user; a missing progress row means not done)
 │   │   ├── Interfaces/
@@ -277,7 +283,7 @@ Startup.Lab/
 | `NewsService` | News list (pagination, tag filter), featured news (`is_primary`), create/edit/delete, photos and videos. News is only hard deleted (no `is_active`) | `INewsReadRepository`, `INewsWriteRepository`, `INewsPhotoReadRepository`, `INewsPhotoWriteRepository`, `INewsVideoReadRepository`, `INewsVideoWriteRepository` |
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
 | `AdminService` | Give the mentor or investor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
-| `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryReadRepository` |
+| `CategoryService` | Categories (Startups) and tags (News): lists for filters, and create, edit and soft delete. Assigning a category to a startup stays in the startup repository | `ICategoryReadRepository`, `ICategoryWriteRepository` |
 | `ToolkitService` | Toolkit videos, documents (links), glossary, pathways | `IToolkitReadRepository` |
 | `ToolkitChecklistService` | Founder checklist in the Toolkit and each user's progress | `IToolkitChecklistReadRepository`, `IToolkitChecklistWriteRepository` |
 | `StartupChecklistService` | Startup checklist and each startup's progress (only the startup's founders can mark it, Q-SU-16) | `IStartupChecklistReadRepository`, `IStartupChecklistWriteRepository`, `IStartupReadRepository` |
@@ -313,3 +319,4 @@ Startup.Lab/
 | 0.11 | 2026-11-12 | Added the `Repositories/NewsItems/` group (news items and their tags). News has no `is_active`, so it is only hard deleted. `SetPrimaryAsync` makes one news item the featured item. | Aleksandre Nadirashvili |
 | 0.12 | 2026-11-12 | Added the `Repositories/NewsPhotos/` group. A news item can have many photos, and at most one is primary. | Aleksandre Nadirashvili |
 | 0.13 | 2026-11-12 | Added the `Repositories/NewsVideos/` group. A news item can have many videos, and at most one is primary. | Aleksandre Nadirashvili |
+| 0.14 | 2026-11-13 | Added the `Repositories/Categories/` group. The folder is plural so it does not hide the `Category` entity. Categories are only soft deleted. | Aleksandre Nadirashvili |

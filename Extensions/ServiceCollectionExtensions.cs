@@ -1,3 +1,5 @@
+using StartupLab.Repositories.Categories;
+using StartupLab.Repositories.Categories.Interfaces;
 using StartupLab.Repositories.NewsItems;
 using StartupLab.Repositories.NewsItems.Interfaces;
 using StartupLab.Repositories.NewsPhotos;
@@ -70,6 +72,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<INewsVideoReadRepository, NewsVideoReadRepository>();
         services.AddScoped<INewsVideoWriteRepository, NewsVideoWriteRepository>();
+
+        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+        services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
