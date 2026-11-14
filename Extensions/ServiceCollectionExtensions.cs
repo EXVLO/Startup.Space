@@ -1,5 +1,7 @@
 using StartupLab.Repositories.NewsItems;
 using StartupLab.Repositories.NewsItems.Interfaces;
+using StartupLab.Repositories.NewsPhotos;
+using StartupLab.Repositories.NewsPhotos.Interfaces;
 using StartupLab.Repositories.StartupChecklists;
 using StartupLab.Repositories.StartupChecklists.Interfaces;
 using StartupLab.Repositories.StartupDocuments;
@@ -60,6 +62,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<INewsReadRepository, NewsReadRepository>();
         services.AddScoped<INewsWriteRepository, NewsWriteRepository>();
+
+        services.AddScoped<INewsPhotoReadRepository, NewsPhotoReadRepository>();
+        services.AddScoped<INewsPhotoWriteRepository, NewsPhotoWriteRepository>();
 
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
