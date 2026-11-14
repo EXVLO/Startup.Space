@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.10. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.11. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/NewsItems/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -202,7 +202,14 @@ Startup.Lab/
 │   │   │   └── IStartupLinkWriteRepository.cs
 │   │   ├── StartupLinkReadRepository.cs
 │   │   └── StartupLinkWriteRepository.cs
-│   ├── NewsItems/                   # News, NewsPhoto, NewsVideo, NewsTag (not "News/", see Conventions)
+│   ├── NewsItems/                   # News, NewsTag (not "News/", see Conventions); hard delete only; SetPrimaryAsync makes one item featured
+│   │   ├── Interfaces/
+│   │   │   ├── INewsReadRepository.cs
+│   │   │   └── INewsWriteRepository.cs
+│   │   ├── NewsReadRepository.cs
+│   │   └── NewsWriteRepository.cs
+│   ├── NewsPhotos/                  # NewsPhoto (pending)
+│   ├── NewsVideos/                  # NewsVideo (pending)
 │   ├── Categories/                  # Category, Tag
 │   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
 │   ├── ToolkitChecklists/           # ToolkitChecklist, ToolkitChecklistProgress (per user; a missing progress row means not done)
@@ -257,7 +264,7 @@ Startup.Lab/
 | `UserService` | Profile data, photos, contacts, experience, settings | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoReadRepository`, `IUserPhotoWriteRepository`, `IUserContactReadRepository`, `IUserContactWriteRepository` |
 | `StartupService` | Startup list (search, filters, pagination), details, create/edit, founders and categories, photos/videos/documents/links, the user's own startups for My Startups. Only the startup's founders (`IsFounderAsync`) and admins may change or delete it (overview §7.4) | `IStartupReadRepository`, `IStartupWriteRepository`, `IStartupPhotoReadRepository`, `IStartupPhotoWriteRepository`, `IStartupVideoReadRepository`, `IStartupVideoWriteRepository`, `IStartupDocumentReadRepository`, `IStartupDocumentWriteRepository`, `IStartupLinkReadRepository`, `IStartupLinkWriteRepository`, `ICategoryReadRepository` |
 | `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
-| `NewsService` | News list (pagination, tag filter), featured news (`is_primary`) | `INewsReadRepository`, `ICategoryReadRepository` |
+| `NewsService` | News list (pagination, tag filter), featured news (`is_primary`), create/edit/delete. News is only hard deleted (no `is_active`) | `INewsReadRepository`, `INewsWriteRepository` |
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
 | `AdminService` | Give the mentor or investor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
 | `CategoryService` | Categories (Startups) and tags (News) for filters | `ICategoryReadRepository` |
@@ -293,3 +300,4 @@ Startup.Lab/
 | 0.8 | 2026-10-28 | Added the `Repositories/UserContacts/` group; contact methods moved out of `Users/`. | Aleksandre Nadirashvili |
 | 0.9 | 2026-11-05 | Followed overview v0.8. `UserChecklist` renamed to `ToolkitChecklistProgress`. Added `IsInvestor`, the `StartupChecklist` and `StartupChecklistProgress` entities, and the `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups (one per checklist, named after its tables). The planned checklist service and view model are split the same way. Added the Toolkit Checklist, Documents and Glossary pages (planned). `_Layout` uses a sidebar instead of the header. | Aleksandre Nadirashvili |
 | 0.10 | 2026-11-08 | Added the `Repositories/Startups/` group (startups, founders, categories) and separate `StartupPhotos/`, `StartupVideos/`, `StartupDocuments/` and `StartupLinks/` groups, following `UserPhotos/` and `UserContacts/`. Conventions explain when a child table gets its own group. `StartupService` lists the new repositories. Followed overview v0.9: users and startups have both soft delete (`DeactivateAsync` / `ActivateAsync`) and hard delete (`DeleteAsync`); which one the services use is Q-DATA-9. Checklist items are only soft deleted, tables without `is_active` only hard deleted. Removing a founder or deleting a user makes startups left with no active founders inactive (`StartupFounderRemoval`). Highlighted startups are planned for later. | Aleksandre Nadirashvili |
+| 0.11 | 2026-11-12 | Added the `Repositories/NewsItems/` group (news items and their tags). News has no `is_active`, so it is only hard deleted. `SetPrimaryAsync` makes one news item the featured item. | Aleksandre Nadirashvili |
