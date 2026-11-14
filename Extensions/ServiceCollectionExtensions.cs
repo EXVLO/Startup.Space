@@ -18,6 +18,8 @@ using StartupLab.Repositories.Startups;
 using StartupLab.Repositories.Startups.Interfaces;
 using StartupLab.Repositories.StartupVideos;
 using StartupLab.Repositories.StartupVideos.Interfaces;
+using StartupLab.Repositories.Tags;
+using StartupLab.Repositories.Tags.Interfaces;
 using StartupLab.Repositories.ToolkitChecklists;
 using StartupLab.Repositories.ToolkitChecklists.Interfaces;
 using StartupLab.Repositories.UserContacts;
@@ -75,6 +77,9 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
         services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
+
+        services.AddScoped<ITagReadRepository, TagReadRepository>();
+        services.AddScoped<ITagWriteRepository, TagWriteRepository>();
 
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
