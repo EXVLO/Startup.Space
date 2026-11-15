@@ -10,7 +10,7 @@ namespace StartupLab.Repositories.Categories;
 /// </summary>
 public class CategoryWriteRepository(ApplicationDbContext context) : ICategoryWriteRepository
 {
-    public async Task<Category> AddAsync(string title, string? description, CancellationToken cancellationToken)
+    public async Task<Category> CreateAsync(string title, string? description, CancellationToken cancellationToken)
     {
         var category = new Category
         {
@@ -30,14 +30,20 @@ public class CategoryWriteRepository(ApplicationDbContext context) : ICategoryWr
             .ExecuteUpdateAsync(s => s
                 .SetProperty(c => c.Title, title)
                 .SetProperty(c => c.Description, description)
-                .SetProperty(c => c.DateModified, (DateTime?)DateTime.UtcNow),
+                .SetProperty(c => c.DateModified, DateTime.UtcNow),
                 cancellationToken) > 0;
 
-    public async Task<bool> SetActiveAsync(int categoryId, bool isActive, CancellationToken cancellationToken) =>
+    public async Task<bool> ActivateAsync(int categoryId, CancellationToken cancellationToken) =>
+        await UpdateIsActiveAsync(categoryId, true, cancellationToken);
+
+    public async Task<bool> DeactivateAsync(int categoryId, CancellationToken cancellationToken) =>
+        await UpdateIsActiveAsync(categoryId, false, cancellationToken);
+
+    private async Task<bool> UpdateIsActiveAsync(int categoryId, bool isActive, CancellationToken cancellationToken) =>
         await context.Categories
             .Where(c => c.Id == categoryId)
             .ExecuteUpdateAsync(s => s
                 .SetProperty(c => c.IsActive, isActive)
-                .SetProperty(c => c.DateModified, (DateTime?)DateTime.UtcNow),
+                .SetProperty(c => c.DateModified, DateTime.UtcNow),
                 cancellationToken) > 0;
 }

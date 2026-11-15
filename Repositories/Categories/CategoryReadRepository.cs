@@ -15,12 +15,16 @@ public class CategoryReadRepository(ApplicationDbContext context) : ICategoryRea
             .AsNoTracking()
             .SingleOrDefaultAsync(c => c.Id == categoryId, cancellationToken);
 
-    public async Task<IReadOnlyList<Category>> GetActiveAsync(int max, CancellationToken cancellationToken) =>
+    public async Task<IReadOnlyList<Category>> GetCategoriesAsync(bool isActive, int skip, int take, CancellationToken cancellationToken) =>
         await context.Categories
             .AsNoTracking()
-            .Where(c => c.IsActive)
+            .Where(c => c.IsActive == isActive)
             .OrderBy(c => c.Title)
             .ThenBy(c => c.Id)
-            .Take(max)
+            .Skip(skip)
+            .Take(take)
             .ToListAsync(cancellationToken);
+
+    public async Task<int> CountCategoriesAsync(bool isActive, CancellationToken cancellationToken) =>
+        await context.Categories.CountAsync(c => c.IsActive == isActive, cancellationToken);
 }

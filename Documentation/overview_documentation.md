@@ -854,3 +854,17 @@ These don't block the folder structure. They will be answered when each feature 
 - **Q-PRIV-1:** Who writes the Privacy Policy text?
 - **Q-PRIV-2:** Is there any data retention rule (e.g. delete inactive accounts after X)?
 - **Q-PRIV-3:** Can users delete their account and data?
+
+
+## additional info (new updates)
+currently we have left these repos:
+- ToolkitVideo
+- ToolkitDocument
+- ToolkitGlossary
+
+and these are what we need to change (only in documentation for now):
+If user gets deleted (hard soft) we make startups which has only founder that user inactive (update is_active in startup table to false)
+this does not mean that startups wont be displayed in the list. The only thing change is UI side. It should display if its active or inactive. 
+add FAQ page as well: incubation.harbour.space/FAQ
+glossary should also be in separate page from toolkit so another new route is being added: incubation.harbour.space/Toolkit/Glossary
+we still should have hard delete for startups (only admin can access)

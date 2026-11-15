@@ -1,5 +1,11 @@
 using StartupLab.Repositories.Categories;
 using StartupLab.Repositories.Categories.Interfaces;
+using StartupLab.Repositories.NewsItems;
+using StartupLab.Repositories.NewsItems.Interfaces;
+using StartupLab.Repositories.NewsPhotos;
+using StartupLab.Repositories.NewsPhotos.Interfaces;
+using StartupLab.Repositories.NewsVideos;
+using StartupLab.Repositories.NewsVideos.Interfaces;
 using StartupLab.Repositories.StartupChecklists;
 using StartupLab.Repositories.StartupChecklists.Interfaces;
 using StartupLab.Repositories.StartupDocuments;
@@ -12,6 +18,8 @@ using StartupLab.Repositories.Startups;
 using StartupLab.Repositories.Startups.Interfaces;
 using StartupLab.Repositories.StartupVideos;
 using StartupLab.Repositories.StartupVideos.Interfaces;
+using StartupLab.Repositories.Tags;
+using StartupLab.Repositories.Tags.Interfaces;
 using StartupLab.Repositories.ToolkitChecklists;
 using StartupLab.Repositories.ToolkitChecklists.Interfaces;
 using StartupLab.Repositories.UserContacts;
@@ -58,14 +66,26 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IStartupLinkReadRepository, StartupLinkReadRepository>();
         services.AddScoped<IStartupLinkWriteRepository, StartupLinkWriteRepository>();
 
+        services.AddScoped<INewsReadRepository, NewsReadRepository>();
+        services.AddScoped<INewsWriteRepository, NewsWriteRepository>();
+
+        services.AddScoped<INewsPhotoReadRepository, NewsPhotoReadRepository>();
+        services.AddScoped<INewsPhotoWriteRepository, NewsPhotoWriteRepository>();
+
+        services.AddScoped<INewsVideoReadRepository, NewsVideoReadRepository>();
+        services.AddScoped<INewsVideoWriteRepository, NewsVideoWriteRepository>();
+
+        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
+        services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
+
+        services.AddScoped<ITagReadRepository, TagReadRepository>();
+        services.AddScoped<ITagWriteRepository, TagWriteRepository>();
+
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
 
         services.AddScoped<IStartupChecklistReadRepository, StartupChecklistReadRepository>();
         services.AddScoped<IStartupChecklistWriteRepository, StartupChecklistWriteRepository>();
-
-        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
-        services.AddScoped<ICategoryWriteRepository, CategoryWriteRepository>();
 
         return services;
     }

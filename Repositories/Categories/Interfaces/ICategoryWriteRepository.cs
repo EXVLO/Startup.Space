@@ -3,22 +3,28 @@ using StartupLab.Models.Entities;
 namespace StartupLab.Repositories.Categories.Interfaces;
 
 /// <summary>
-/// Adds, changes and activates or deactivates categories.
+/// Adds and changes startup categories. A category is only soft deleted, because it has <c>is_active</c>.
 /// </summary>
 public interface ICategoryWriteRepository
 {
     /// <summary>
     /// Adds a category and returns it with its new id.
     /// </summary>
-    Task<Category> AddAsync(string title, string? description, CancellationToken cancellationToken);
+    Task<Category> CreateAsync(string title, string? description, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Changes a category. Returns false if it doesn't exist.
+    /// Changes the category's title and description. Returns false if the category doesn't exist.
     /// </summary>
     Task<bool> UpdateAsync(int categoryId, string title, string? description, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Shows or hides a category. Returns false if it doesn't exist.
+    /// Makes an inactive category active again. Returns false if the category doesn't exist.
     /// </summary>
-    Task<bool> SetActiveAsync(int categoryId, bool isActive, CancellationToken cancellationToken);
+    Task<bool> ActivateAsync(int categoryId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Makes the category inactive (soft delete). It stays in the database and is hidden from filters.
+    /// Returns false if the category doesn't exist.
+    /// </summary>
+    Task<bool> DeactivateAsync(int categoryId, CancellationToken cancellationToken);
 }
