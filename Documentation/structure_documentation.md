@@ -1,6 +1,6 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.15. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/NewsItems/`, `Repositories/NewsPhotos/`, `Repositories/NewsVideos/`, `Repositories/Categories/`, `Repositories/Tags/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.16. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the `Repositories/Users/`, `Repositories/UserPhotos/`, `Repositories/UserContacts/`, `Repositories/Startups/`, `Repositories/StartupPhotos/`, `Repositories/StartupVideos/`, `Repositories/StartupDocuments/`, `Repositories/StartupLinks/`, `Repositories/NewsItems/`, `Repositories/NewsPhotos/`, `Repositories/NewsVideos/`, `Repositories/Categories/`, `Repositories/Tags/`, `Repositories/ToolkitVideos/`, `Repositories/ToolkitDocuments/`, `Repositories/ToolkitGlossaries/`, `Repositories/ToolkitChecklists/` and `Repositories/StartupChecklists/` groups, and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
 
@@ -232,7 +232,24 @@ Startup.Lab/
 │   │   │   └── ITagWriteRepository.cs
 │   │   ├── TagReadRepository.cs
 │   │   └── TagWriteRepository.cs
-│   ├── Toolkit/                     # ToolkitVideo, ToolkitDocument, ToolkitGlossary
+│   ├── ToolkitVideos/               # ToolkitVideo; hard delete only (no is_active); delete returns the address_key
+│   │   ├── Interfaces/
+│   │   │   ├── IToolkitVideoReadRepository.cs
+│   │   │   └── IToolkitVideoWriteRepository.cs
+│   │   ├── ToolkitVideoReadRepository.cs
+│   │   └── ToolkitVideoWriteRepository.cs
+│   ├── ToolkitDocuments/            # ToolkitDocument (links, no stored file); hard delete only (no is_active)
+│   │   ├── Interfaces/
+│   │   │   ├── IToolkitDocumentReadRepository.cs
+│   │   │   └── IToolkitDocumentWriteRepository.cs
+│   │   ├── ToolkitDocumentReadRepository.cs
+│   │   └── ToolkitDocumentWriteRepository.cs
+│   ├── ToolkitGlossaries/           # ToolkitGlossary (term and definition); hard delete only (no is_active)
+│   │   ├── Interfaces/
+│   │   │   ├── IToolkitGlossaryReadRepository.cs
+│   │   │   └── IToolkitGlossaryWriteRepository.cs
+│   │   ├── ToolkitGlossaryReadRepository.cs
+│   │   └── ToolkitGlossaryWriteRepository.cs
 │   ├── ToolkitChecklists/           # ToolkitChecklist, ToolkitChecklistProgress (per user; a missing progress row means not done)
 │   │   ├── Interfaces/
 │   │   │   ├── IToolkitChecklistReadRepository.cs
@@ -289,7 +306,7 @@ Startup.Lab/
 | `MentorService` | Mentors (users with `IsMentor`) for About Us, Landing "Meet the Crew", and the booking page | `IUserReadRepository` |
 | `AdminService` | Give the mentor or investor role to any user (only admins). Other admin actions are pending (Q-ROLE-4) | `IUserReadRepository`, `IUserWriteRepository` |
 | `CategoryService` | Categories (Startups) and tags (News): lists for filters, and create, edit and soft delete. Assigning them to a startup or a news item stays in those repositories | `ICategoryReadRepository`, `ICategoryWriteRepository`, `ITagReadRepository`, `ITagWriteRepository` |
-| `ToolkitService` | Toolkit videos, documents (links), glossary, pathways | `IToolkitReadRepository` |
+| `ToolkitService` | Toolkit videos, documents (links), glossary, pathways; create, edit and delete for videos, documents and glossary entries. They have no `is_active`, so they are only hard deleted | `IToolkitVideoReadRepository`, `IToolkitVideoWriteRepository`, `IToolkitDocumentReadRepository`, `IToolkitDocumentWriteRepository`, `IToolkitGlossaryReadRepository`, `IToolkitGlossaryWriteRepository` |
 | `ToolkitChecklistService` | Founder checklist in the Toolkit and each user's progress | `IToolkitChecklistReadRepository`, `IToolkitChecklistWriteRepository` |
 | `StartupChecklistService` | Startup checklist and each startup's progress (only the startup's founders can mark it, Q-SU-16) | `IStartupChecklistReadRepository`, `IStartupChecklistWriteRepository`, `IStartupReadRepository` |
 | `BookingService` | Users booking mentors, mentor availability, mentor booking page (pending: Q-BOOK-14) | `IBookingReadRepository`, `IBookingWriteRepository`, `IUserReadRepository` |
@@ -326,3 +343,4 @@ Startup.Lab/
 | 0.13 | 2026-11-12 | Added the `Repositories/NewsVideos/` group. A news item can have many videos, and at most one is primary. | Aleksandre Nadirashvili |
 | 0.14 | 2026-11-13 | Added the `Repositories/Categories/` group. The folder is plural so it does not hide the `Category` entity. Categories are only soft deleted. | Aleksandre Nadirashvili |
 | 0.15 | 2026-11-13 | Added the `Repositories/Tags/` group. The folder is plural so it does not hide the `Tag` entity. Tags are only soft deleted. Assigning a tag to a news item stays in `NewsItems/`. | Aleksandre Nadirashvili |
+| 0.16 | 2026-11-16 | Added the `Repositories/ToolkitVideos/`, `Repositories/ToolkitDocuments/` and `Repositories/ToolkitGlossaries/` groups instead of one planned `Toolkit/` group, one per page like the News groups. None of the three tables has `is_active`, so they are only hard deleted; deleting a video returns its `address_key`. `ToolkitService` lists the new repositories. | Nikoloz Khidasheli |

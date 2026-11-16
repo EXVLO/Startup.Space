@@ -1,6 +1,6 @@
 # Coding Style Documentation
 
-> **Status:** Draft v0.3.
+> **Status:** Draft v0.4.
 > How C# code in this project is written: comments, naming, spacing, and the patterns used in entities and repositories. The rules come from the code that already exists, so new code should look the same.
 > Related: [`structure_documentation.md`](structure_documentation.md) (folders, layers), [`development_workflow_documentation.md`](development_workflow_documentation.md) (pre-push checks, including `dotnet format`).
 
@@ -66,7 +66,7 @@ Task<User?> GetByIdAsync(int userId, CancellationToken cancellationToken);
 | Repositories | `{Group}ReadRepository` / `{Group}WriteRepository` | `UserReadRepository` |
 | Boolean properties | `Is...` | `IsActive`, `IsMentor`, `IsInvestor`, `IsPrimary` |
 
-**Lambda parameters** use the first letter of the entity (`u` for User, `p` for photo, `v` for video, `d` for document, `l` for link, `c` for contact, category or checklist item, `e` for experience). Startup uses `st`, because `s` is taken by the setter. Join entities use two letters (`us` for UserStartup, `sc` for StartupCategory, `tp` for ToolkitChecklistProgress, `sp` for StartupChecklistProgress). Inside `ExecuteUpdateAsync`, the setter parameter is `s`:
+**Lambda parameters** use the first letter of the entity (`u` for User, `p` for photo, `v` for video, `d` for document, `l` for link, `c` for contact, category or checklist item, `e` for experience, `g` for glossary entry). Startup uses `st`, because `s` is taken by the setter. Join entities use two letters (`us` for UserStartup, `sc` for StartupCategory, `tp` for ToolkitChecklistProgress, `sp` for StartupChecklistProgress). Inside `ExecuteUpdateAsync`, the setter parameter is `s`:
 
 ```csharp
 .Where(u => u.Id == userId)
@@ -165,3 +165,4 @@ Run `dotnet format` before pushing. CI fails if it would change anything ([workf
 | 0.1 | 2026-10-28 | First version: comments, naming, layout, entities, repositories, dependency injection. | Aleksandre Nadirashvili |
 | 0.2 | 2026-11-05 | Lambda examples follow the `ToolkitChecklistProgress` rename (`tp`) and the new `StartupChecklistProgress` (`sp`). Added `IsInvestor` to the boolean examples. Every async method now uses `async`/`await` (Section 4); returning the `Task` directly is no longer allowed. | Aleksandre Nadirashvili |
 | 0.3 | 2026-11-08 | Lambda letters for the startup repositories: `st` (Startup), `sc` (StartupCategory), `v`, `d`, `l` (video, document, link). Write repositories: soft delete is `DeactivateAsync` / `ActivateAsync`, hard delete is `DeleteAsync`; users and startups have both. Changes that take several statements use a transaction. | Aleksandre Nadirashvili |
+| 0.4 | 2026-11-16 | Lambda letter `g` for toolkit glossary entries. | Nikoloz Khidasheli |
