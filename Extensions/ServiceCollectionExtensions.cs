@@ -22,6 +22,12 @@ using StartupLab.Repositories.Tags;
 using StartupLab.Repositories.Tags.Interfaces;
 using StartupLab.Repositories.ToolkitChecklists;
 using StartupLab.Repositories.ToolkitChecklists.Interfaces;
+using StartupLab.Repositories.ToolkitDocuments;
+using StartupLab.Repositories.ToolkitDocuments.Interfaces;
+using StartupLab.Repositories.ToolkitGlossaries;
+using StartupLab.Repositories.ToolkitGlossaries.Interfaces;
+using StartupLab.Repositories.ToolkitVideos;
+using StartupLab.Repositories.ToolkitVideos.Interfaces;
 using StartupLab.Repositories.UserContacts;
 using StartupLab.Repositories.UserContacts.Interfaces;
 using StartupLab.Repositories.UserPhotos;
@@ -80,6 +86,15 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ITagReadRepository, TagReadRepository>();
         services.AddScoped<ITagWriteRepository, TagWriteRepository>();
+
+        services.AddScoped<IToolkitVideoReadRepository, ToolkitVideoReadRepository>();
+        services.AddScoped<IToolkitVideoWriteRepository, ToolkitVideoWriteRepository>();
+
+        services.AddScoped<IToolkitDocumentReadRepository, ToolkitDocumentReadRepository>();
+        services.AddScoped<IToolkitDocumentWriteRepository, ToolkitDocumentWriteRepository>();
+
+        services.AddScoped<IToolkitGlossaryReadRepository, ToolkitGlossaryReadRepository>();
+        services.AddScoped<IToolkitGlossaryWriteRepository, ToolkitGlossaryWriteRepository>();
 
         services.AddScoped<IToolkitChecklistReadRepository, ToolkitChecklistReadRepository>();
         services.AddScoped<IToolkitChecklistWriteRepository, ToolkitChecklistWriteRepository>();
