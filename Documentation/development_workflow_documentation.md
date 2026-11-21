@@ -2,7 +2,7 @@
 
 > **Status:** Draft v0.4.
 > Commands to run before every push. They mirror the checks in `.github/workflows/build.yml`, so if they pass locally, they pass on GitHub.
-> Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md), [`coding_style_documentation.md`](coding_style_documentation.md).
+> Related: [`overview_documentation.md`](overview_documentation.md), [`structure_documentation.md`](structure_documentation.md), [`coding_style_documentation.md`](coding_style_documentation.md), [`local_testing_documentation.md`](local_testing_documentation.md) (run the database and the site).
 
 ---
 
@@ -126,3 +126,4 @@ Pushing new commits to the same branch re-runs the checks.
 | 0.2 | 2026-10-18 | Removed branch, commit, and pull request sections. Kept only pre-push checks and CI fixes. | Aleksandre Nadirashvili |
 | 0.3 | 2026-10-18 | Added CodeQL to the CI failure table. | Aleksandre Nadirashvili |
 | 0.4 | 2026-10-24 | Project renamed from MentorBooking to Startup.Lab. | Aleksandre Nadirashvili |
+| 0.5 | 2026-11-21 | Linked the local testing guide for the PostgreSQL container and the running site. | Aleksandre Nadirashvili |
