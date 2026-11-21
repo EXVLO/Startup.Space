@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using StartupLab.Models.ViewModels.Profile;
-using StartupLab.Services.Interfaces;
+using StartupLab.Services.Account.Interfaces;
+using StartupLab.Services.Users.Interfaces;
 
-namespace StartupLab.Controllers;
+namespace StartupLab.Controllers.Users;
 
 /// <summary>
 /// The signed-in user's profile: name, photo, contacts and experience. Route: /Profile.
 /// </summary>
 [Route("Profile")]
-public class ProfileController(IUserService userService) : Controller
+public class ProfileController(IUserService userService, IAccountService accountService) : Controller
 {
     [HttpGet("")]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -21,7 +22,8 @@ public class ProfileController(IUserService userService) : Controller
         var user = await userService.GetProfileAsync(userId, cancellationToken);
         if (user is null)
         {
-            return NotFound();
+            await accountService.LogoutAsync(cancellationToken);
+            return Redirect("/Login");
         }
 
         return View(new ProfileViewModel

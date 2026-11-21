@@ -1,7 +1,7 @@
 using StartupLab.Models.Entities;
-using StartupLab.Services;
+using StartupLab.Services.Users;
 
-namespace StartupLab.Services.Interfaces;
+namespace StartupLab.Services.Users.Interfaces;
 
 /// <summary>
 /// Profile, photo, contacts, experience, and account removal for one user.

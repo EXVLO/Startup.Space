@@ -1,8 +1,9 @@
 # Project Structure Documentation
 
-> **Status:** Draft v0.17. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the repository groups, `Services/UserService` (`IUserService`), `ProfileController` (`/Profile`), `SettingsController` (`/Settings`), and dependency injection (`Extensions/`). Everything else is still planned.
+> **Status:** Draft v0.20. This is the planned structure. Built so far: the data model (`Models/Entities/`, `Data/`), the repository groups, `Services/Users/` (`IUserService`), `Services/Account/` (`IAccountService`), `Controllers/Home/`, `Controllers/Account/` (`/Login`, `/Register`, `/Logout`), `Controllers/Users/` (`/Profile`, `/Settings`), and dependency injection (`Extensions/`). Everything else is still planned.
 > Requirements, data model, and open questions live in [`overview_documentation.md`](overview_documentation.md). Question IDs (for example Q-BOOK-3) refer to the Open Questions section there.
 > How code is written (comments, naming, spacing) is in [`coding_style_documentation.md`](coding_style_documentation.md).
+> How to run the database and try the pages is in [`local_testing_documentation.md`](local_testing_documentation.md).
 
 ---
 
@@ -10,9 +11,10 @@ The layer order follows Section 3.1 of the overview: **Controller -> Service -> 
 
 ## 1. Conventions
 
-- **Namespaces start with `StartupLab`** and follow the folder (`StartupLab.Services`, `StartupLab.Models.Entities`). Don't use `Startup.Lab`: a root namespace named `Startup` hides the `Startup` entity class (error CS0118).
-- **One class or interface per file.** The file name matches the type name (`BookingService.cs` contains `BookingService`).
-- **Interfaces in an `Interfaces/` subfolder** inside `Services/` and inside `Repositories/`. Each implementation has its own interface (`IBookingService` / `BookingService`).
+- **Namespaces start with `StartupLab`** and follow the folder (`StartupLab.Services.Users`, `StartupLab.Models.Entities`). Don't use `Startup.Lab`: a root namespace named `Startup` hides the `Startup` entity class (error CS0118).
+- **One class or interface per file.** The file name matches the type name (`UserService.cs` contains `UserService`).
+- **One folder per group** in `Controllers/`, `Services/`, and `Repositories/`. The folder is plural when the singular name would hide an entity (`Users/`, not `User/`, same rule as `NewsItems/`).
+- **Interfaces in an `Interfaces/` subfolder** of that service or repository group. Each implementation has its own interface (`IUserService` / `UserService`). Controllers have no interfaces.
 - **Controllers depend only on service interfaces.** Services depend only on repository interfaces. Repositories are the only layer that uses the `DbContext`.
 - **Entities (database tables) and ViewModels (page data) are separate.** Views never receive entities directly.
 - **One folder per entity group in `Repositories/`.** Join tables stay with their main entity (`Startups/` also handles `UserStartup` and `StartupCategory`). Child tables that a user adds, changes and deletes on their own, such as photos, contacts and links, get their own group (`UserPhotos/`, `StartupLinks/`), so each repository stays small.
@@ -31,20 +33,24 @@ Startup.Lab/
 ├── appsettings.json
 ├── appsettings.Development.json
 │
-├── Controllers/
-│   ├── HomeController.cs            # /  (Landing), /PP (Privacy and Policy)
-│   ├── AccountController.cs         # /Login, /Register, Logout, Forgot Password
-│   ├── StartupsController.cs        # /Startups, /Startups/{id}
-│   ├── FoundersController.cs        # /Founders, /Founders/{id}
-│   ├── NewsController.cs            # /News
-│   ├── AboutUsController.cs         # /AboutUs, /AboutUs/Team
-│   ├── ProfileController.cs         # /Profile
-│   ├── MyStartupsController.cs      # /MyStartups (the logged-in user's startups)
-│   ├── SettingsController.cs        # /Settings
-│   ├── BookingController.cs         # /Booking (users book a mentor); mentor booking page (pending: Q-BOOK-14)
-│   ├── AdminController.cs           # give mentor role to a user (pending: route and other admin pages, Q-ROLE-4)
-│   ├── ArchiveController.cs         # /Archive
-│   └── ToolkitController.cs         # /Toolkit, /Toolkit/Videos, /Toolkit/Pathway, /Toolkit/Checklist, /Toolkit/Documents, /Toolkit/Glossary
+├── Controllers/                     # one folder per area, same as Repositories/; no Interfaces/ folder
+│   ├── Home/                        # / (Landing), /PP (Privacy and Policy)
+│   │   └── HomeController.cs
+│   ├── Account/                     # /Login, /Register, /Logout
+│   │   └── AccountController.cs
+│   ├── Users/                       # /Profile, /Settings (not "User/")
+│   │   ├── CurrentUser.cs           # signed-in user id from the authentication cookie
+│   │   ├── ProfileController.cs
+│   │   └── SettingsController.cs
+│   ├── Startups/                    # /Startups, /Startups/{id} (planned)
+│   ├── Founders/                    # /Founders, /Founders/{id} (planned)
+│   ├── News/                        # /News (planned; folder name is the page, the entity stays NewsItems in repositories)
+│   ├── AboutUs/                     # /AboutUs, /AboutUs/Team (planned)
+│   ├── MyStartups/                  # /MyStartups (planned)
+│   ├── Booking/                     # /Booking; mentor booking page (pending: Q-BOOK-14)
+│   ├── Admin/                       # give mentor role (pending: route, Q-ROLE-4)
+│   ├── Archive/                     # /Archive (planned)
+│   └── Toolkit/                     # /Toolkit and its sub-pages (planned)
 │
 ├── Models/
 │   ├── Entities/                    # one class per database table (Section 6)
@@ -121,36 +127,29 @@ Startup.Lab/
 │       └── Shared/
 │           └── PagedResultViewModel.cs      # pagination (Section 3.3 "Pagination and limits")
 │
-├── Services/
-│   ├── Interfaces/
-│   │   ├── IAccountService.cs
-│   │   ├── IUserService.cs
-│   │   ├── IStartupService.cs
-│   │   ├── IFounderService.cs
-│   │   ├── INewsService.cs
-│   │   ├── IMentorService.cs
-│   │   ├── IAdminService.cs
-│   │   ├── ICategoryService.cs
-│   │   ├── IToolkitService.cs
-│   │   ├── IToolkitChecklistService.cs
-│   │   ├── IStartupChecklistService.cs
-│   │   ├── IBookingService.cs
-│   │   ├── IArchiveService.cs
-│   │   └── IFileStorageService.cs   # (pending: Q-DATA-2, what address_key is)
-│   ├── AccountService.cs
-│   ├── UserService.cs
-│   ├── StartupService.cs
-│   ├── FounderService.cs
-│   ├── NewsService.cs
-│   ├── MentorService.cs
-│   ├── AdminService.cs
-│   ├── CategoryService.cs
-│   ├── ToolkitService.cs
-│   ├── ToolkitChecklistService.cs
-│   ├── StartupChecklistService.cs
-│   ├── BookingService.cs
-│   ├── ArchiveService.cs
-│   └── FileStorageService.cs        # (pending: Q-DATA-2)
+├── Services/                        # one folder per area, same as Repositories/; Interfaces/ inside the group
+│   ├── Users/                       # profile, photo, contacts, experience, deactivate and hard delete (not "User/")
+│   │   ├── Interfaces/
+│   │   │   └── IUserService.cs
+│   │   ├── PhotoChange.cs           # result of setting a photo: saved or not, and the previous address key
+│   │   └── UserService.cs
+│   ├── Account/                     # register, login, logout. Forgot password is still open (Q-AUTH-7)
+│   │   ├── Interfaces/
+│   │   │   └── IAccountService.cs
+│   │   ├── AccountResult.cs         # success, or messages safe to show on the form
+│   │   └── AccountService.cs
+│   ├── Startups/                    # (planned)
+│   ├── Founders/                    # (planned)
+│   ├── NewsItems/                   # (planned; not "News/", same reason as the repository group)
+│   ├── Mentors/                     # (planned)
+│   ├── Admin/                       # (planned, Q-ROLE-4)
+│   ├── Categories/                  # categories and tags (planned)
+│   ├── Toolkit/                     # videos, documents, glossary (planned)
+│   ├── ToolkitChecklists/           # (planned)
+│   ├── StartupChecklists/           # (planned)
+│   ├── Bookings/                    # (pending: Q-BOOK-3)
+│   ├── Archive/                     # (planned)
+│   └── FileStorage/                 # (pending: Q-DATA-2, what address_key is)
 │
 ├── Repositories/                    # one folder per entity group; every group has the same four files as Users/
 │   ├── Users/                       # User, UserExperience (mentors are users with IsMentor); soft (DeactivateAsync) and hard (DeleteAsync) delete; both deactivate startups left with no active founders
@@ -298,8 +297,8 @@ Startup.Lab/
 
 | Service | Responsibility | Uses repositories |
 |---|---|---|
-| `AccountService` | Login, register, logout, forgot password | `IUserReadRepository` (+ ASP.NET Core Identity if chosen, Q-TECH-3) |
-| `UserService` | Profile data, photos, contacts, experience, and deactivating or deleting the account. `ProfileController` (`/Profile`) and `SettingsController` (`/Settings`) are the only callers. The signed-in user comes from the name-identifier claim; there is no login yet, so both pages redirect to `/Login` until Account exists (Q-TECH-3). Password and email changes stay open (Q-PR-3) | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoWriteRepository`, `IUserContactWriteRepository` |
+| `AccountService` | Register, login, and logout. Lives in `Services/Account/`. Uses ASP.NET Core Identity (`UserManager`, `SignInManager`) because the password is not a column on `User`. Email must be unique. An inactive user cannot sign in. Forgot password is still open (Q-AUTH-7). Email confirmation is not required (Q-AUTH-6) | Identity, not a repository |
+| `UserService` | Profile data, photos, contacts, experience, and deactivating or deleting the account. Lives in `Services/Users/`. `Controllers/Users/ProfileController` (`/Profile`) and `SettingsController` (`/Settings`) are the callers. The signed-in user comes from `CurrentUser`, which reads the id set by `AccountService`. Password and email changes stay open (Q-PR-3) | `IUserReadRepository`, `IUserWriteRepository`, `IUserPhotoWriteRepository`, `IUserContactWriteRepository` |
 | `StartupService` | Startup list (search, filters, pagination), details, create/edit, founders and categories, photos/videos/documents/links, the user's own startups for My Startups. Only the startup's founders (`IsFounderAsync`) and admins may change or delete it (overview §7.4) | `IStartupReadRepository`, `IStartupWriteRepository`, `IStartupPhotoReadRepository`, `IStartupPhotoWriteRepository`, `IStartupVideoReadRepository`, `IStartupVideoWriteRepository`, `IStartupDocumentReadRepository`, `IStartupDocumentWriteRepository`, `IStartupLinkReadRepository`, `IStartupLinkWriteRepository`, `ICategoryReadRepository` |
 | `FounderService` | Founder list and details (every user is a founder) | `IUserReadRepository`, `IStartupReadRepository` |
 | `NewsService` | News list (pagination, tag filter), featured news (`is_primary`), create/edit/delete, photos and videos. News is only hard deleted (no `is_active`) | `INewsReadRepository`, `INewsWriteRepository`, `INewsPhotoReadRepository`, `INewsPhotoWriteRepository`, `INewsVideoReadRepository`, `INewsVideoWriteRepository`, `ITagReadRepository` |
@@ -345,3 +344,6 @@ Startup.Lab/
 | 0.15 | 2026-11-13 | Added the `Repositories/Tags/` group. The folder is plural so it does not hide the `Tag` entity. Tags are only soft deleted. Assigning a tag to a news item stays in `NewsItems/`. | Aleksandre Nadirashvili |
 | 0.16 | 2026-11-16 | Added the `Repositories/ToolkitVideos/`, `Repositories/ToolkitDocuments/` and `Repositories/ToolkitGlossaries/` groups instead of one planned `Toolkit/` group, one per page like the News groups. None of the three tables has `is_active`, so they are only hard deleted; deleting a video returns its `address_key`. `ToolkitService` lists the new repositories. | Nikoloz Khidasheli |
 | 0.17 | 2026-11-21 | Added `UserService` with `ProfileController` (`/Profile`) and `SettingsController` (`/Settings`). Profile edits name, photo, contacts and experience. Settings deactivates or hard-deletes the account. Both require a signed-in user id, which login does not set yet. | Aleksandre Nadirashvili |
+| 0.18 | 2026-11-21 | Controllers and services use one folder per area, the same way repositories do. Built groups are `Controllers/Home/`, `Controllers/Account/`, `Controllers/Users/`, and `Services/Users/` with its own `Interfaces/` folder. A group folder is plural when the singular name would hide an entity. | Aleksandre Nadirashvili |
+| 0.19 | 2026-11-21 | Added `Services/Account/` and connected `/Register`, `/Login`, and `/Logout`. Identity stores the password and sets the sign-in cookie that `CurrentUser` reads. A new account is signed in and sent to `/Profile`. | Aleksandre Nadirashvili |
+| 0.20 | 2026-11-21 | Linked the local testing guide, which covers the PostgreSQL container, migrations, and trying the pages. | Aleksandre Nadirashvili |

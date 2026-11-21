@@ -1,4 +1,4 @@
-namespace StartupLab.Services;
+namespace StartupLab.Services.Users;
 
 /// <summary>
 /// Result of setting a user's photo.

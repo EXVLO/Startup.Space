@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace StartupLab.Controllers;
+namespace StartupLab.Controllers.Users;
 
 /// <summary>
 /// Reads the signed-in user's id from the authentication cookie.

@@ -2,9 +2,9 @@ using StartupLab.Models.Entities;
 using StartupLab.Repositories.UserContacts.Interfaces;
 using StartupLab.Repositories.UserPhotos.Interfaces;
 using StartupLab.Repositories.Users.Interfaces;
-using StartupLab.Services.Interfaces;
+using StartupLab.Services.Users.Interfaces;
 
-namespace StartupLab.Services;
+namespace StartupLab.Services.Users;
 
 /// <summary>
 /// Implementation of <see cref="IUserService"/>.

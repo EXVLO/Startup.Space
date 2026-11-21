@@ -34,8 +34,10 @@ using StartupLab.Repositories.UserPhotos;
 using StartupLab.Repositories.UserPhotos.Interfaces;
 using StartupLab.Repositories.Users;
 using StartupLab.Repositories.Users.Interfaces;
-using StartupLab.Services;
-using StartupLab.Services.Interfaces;
+using StartupLab.Services.Account;
+using StartupLab.Services.Account.Interfaces;
+using StartupLab.Services.Users;
+using StartupLab.Services.Users.Interfaces;
 
 namespace StartupLab.Extensions;
 
@@ -54,6 +56,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserWriteRepository, UserWriteRepository>();
 
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAccountService, AccountService>();
 
         services.AddScoped<IUserPhotoReadRepository, UserPhotoReadRepository>();
         services.AddScoped<IUserPhotoWriteRepository, UserPhotoWriteRepository>();

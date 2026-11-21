@@ -19,14 +19,31 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 gap-2">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="btn btn-outline-primary" href="/Profile">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary" href="/Settings">Settings</a>
                         </li>
                     </ul>
+                    <div class="d-flex gap-2">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <form method="post" action="/Logout">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-secondary">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-secondary" href="/Login">Login</a>
+                            <a class="btn btn-primary" href="/Register">Register</a>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>

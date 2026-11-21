@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using StartupLab.Models.ViewModels.Settings;
-using StartupLab.Services.Interfaces;
+using StartupLab.Services.Account.Interfaces;
+using StartupLab.Services.Users.Interfaces;
 
-namespace StartupLab.Controllers;
+namespace StartupLab.Controllers.Users;
 
 /// <summary>
 /// The signed-in user's account settings. Route: /Settings.
 /// Password and email changes are still open (Q-PR-3) and stay with account login.
 /// </summary>
 [Route("Settings")]
-public class SettingsController(IUserService userService) : Controller
+public class SettingsController(IUserService userService, IAccountService accountService) : Controller
 {
     [HttpGet("")]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
@@ -22,7 +23,8 @@ public class SettingsController(IUserService userService) : Controller
         var user = await userService.GetProfileAsync(userId, cancellationToken);
         if (user is null)
         {
-            return NotFound();
+            await accountService.LogoutAsync(cancellationToken);
+            return Redirect("/Login");
         }
 
         return View(new SettingsViewModel
@@ -65,6 +67,7 @@ public class SettingsController(IUserService userService) : Controller
             return NotFound();
         }
 
+        await accountService.LogoutAsync(cancellationToken);
         return Redirect("/");
     }
 }
