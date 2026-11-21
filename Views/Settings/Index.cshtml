@@ -1,0 +1,18 @@
+@model StartupLab.Models.ViewModels.Settings.SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<h1>Settings</h1>
+
+<p>@Model.Name @Model.Surname</p>
+<p>@Model.Email</p>
+<p>@(Model.IsActive ? "Active" : "Inactive")</p>
+
+<form asp-action="Deactivate" method="post" class="mb-3">
+    <button type="submit" class="btn btn-outline-secondary">Deactivate account</button>
+</form>
+
+<form asp-action="Delete" method="post">
+    <button type="submit" class="btn btn-danger">Delete account</button>
+</form>

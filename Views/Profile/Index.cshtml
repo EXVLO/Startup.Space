@@ -1,0 +1,95 @@
+@model StartupLab.Models.ViewModels.Profile.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1>Profile</h1>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<p>@Model.Email</p>
+
+<form asp-action="Update" method="post" class="mb-4">
+    <div class="mb-3">
+        <label class="form-label" for="name">Name</label>
+        <input class="form-control" id="name" name="name" value="@Model.Name" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="surname">Surname</label>
+        <input class="form-control" id="surname" name="surname" value="@Model.Surname" required />
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-control" id="description" name="description">@Model.Description</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save profile</button>
+</form>
+
+<h2>Photo</h2>
+@if (Model.PhotoAddressKey is not null)
+{
+    <p>@Model.PhotoAddressKey</p>
+    <form asp-action="DeletePhoto" method="post" class="mb-3">
+        <button type="submit" class="btn btn-outline-danger">Remove photo</button>
+    </form>
+}
+<form asp-action="Photo" method="post" class="mb-4">
+    <div class="mb-3">
+        <label class="form-label" for="addressKey">Photo address key</label>
+        <input class="form-control" id="addressKey" name="addressKey" value="@Model.PhotoAddressKey" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save photo</button>
+</form>
+
+<h2>Contacts</h2>
+@foreach (var contact in Model.Contacts)
+{
+    <form asp-action="UpdateContact" method="post" class="d-flex gap-2 mb-2">
+        <input type="hidden" name="contactId" value="@contact.ContactId" />
+        <input class="form-control" name="contactInfo" value="@contact.ContactInfo" required />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <form asp-action="DeleteContact" method="post" class="mb-3">
+        <input type="hidden" name="contactId" value="@contact.ContactId" />
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+}
+<form asp-action="AddContact" method="post" class="mb-4">
+    <div class="mb-3">
+        <label class="form-label" for="contactInfo">New contact</label>
+        <input class="form-control" id="contactInfo" name="contactInfo" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Add contact</button>
+</form>
+
+<h2>Experience</h2>
+@foreach (var experience in Model.Experiences)
+{
+    <form asp-action="UpdateExperience" method="post" class="mb-2">
+        <input type="hidden" name="experienceId" value="@experience.ExperienceId" />
+        <div class="mb-2">
+            <input class="form-control" name="title" value="@experience.Title" placeholder="Title" />
+        </div>
+        <div class="mb-2">
+            <textarea class="form-control" name="description" placeholder="Description">@experience.Description</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    <form asp-action="DeleteExperience" method="post" class="mb-3">
+        <input type="hidden" name="experienceId" value="@experience.ExperienceId" />
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+}
+<form asp-action="AddExperience" method="post">
+    <div class="mb-2">
+        <label class="form-label" for="title">New experience</label>
+        <input class="form-control" id="title" name="title" placeholder="Title" />
+    </div>
+    <div class="mb-3">
+        <textarea class="form-control" name="description" placeholder="Description"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Add experience</button>
+</form>
